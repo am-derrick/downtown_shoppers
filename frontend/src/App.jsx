@@ -1,13 +1,16 @@
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './components/layout/Layout';
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-white">
-        {/* App content */}
-      </div>
-    </Router>
-  )
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<div>Hello Downtown Shoppers</div>} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
