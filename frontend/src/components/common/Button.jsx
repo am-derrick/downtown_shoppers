@@ -2,51 +2,50 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Button = ({ 
-  children, 
-  variant = 'primary', 
-  size = 'md',
-  href,
-  className = '',
-  ...props 
+    children, 
+    variant = 'primary', 
+    size = 'md', 
+    fullWidth = false,
+    href,
+    className = '',
+    ...props 
 }) => {
-  // Base styles that apply to all buttons
-  const baseStyles = "rounded-full font-light transition-all duration-200";
-  
-  const variants = {
-    primary: "bg-black text-white hover:bg-gray-900",
-    secondary: "border border-black text-black hover:bg-black hover:text-white",
-    outline: "border border-gray-200 text-gray-700 hover:border-gray-900",
-    text: "text-gray-600 hover:text-black"
-  };
+    const baseStyles = [
+        "font-gotham",
+        "rounded-full",
+        "transition-all duration-200",
+        "inline-flex items-center justify-center",
+        "focus:outline-none focus:ring-2 focus:ring-offset-2"
+    ].join(' ');
+    
+    const variants = {
+        primary: "bg-black text-white hover:bg-neutral-900 focus:ring-black/20",
+        secondary: "border-2 border-black text-black hover:bg-black hover:text-white",
+        minimal: "text-neutral-600 hover:text-black hover:bg-neutral-50"
+    };
 
-  const sizes = {
-    sm: "px-4 py-2 text-sm",
-    md: "px-6 py-2.5 text-sm",
-    lg: "px-8 py-3 text-base"
-  };
+    const sizes = {
+        sm: "px-4 py-2 text-sm",
+        md: "px-6 py-2.5 text-sm",
+        lg: "px-8 py-3 text-base",
+    };
 
-  const buttonClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
+    const widthClass = fullWidth ? 'w-full' : '';
+    const buttonClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${widthClass} ${className}`;
 
-  if (href) {
+    if (href) {
+        return (
+            <Link to={href} className={buttonClasses} {...props}>
+                {children}
+            </Link>
+        );
+    }
+
     return (
-      <Link 
-        to={href}
-        className={buttonClasses}
-        {...props}
-      >
-        {children}
-      </Link>
+        <button className={buttonClasses} {...props}>
+            {children}
+        </button>
     );
-  }
-
-  return (
-    <button 
-      className={buttonClasses}
-      {...props}
-    >
-      {children}
-    </button>
-  );
 };
 
 export default Button;
