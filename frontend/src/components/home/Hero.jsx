@@ -44,8 +44,7 @@ const Hero = () => {
     }, []);
 
     return (
-        // Add a gradient background container
-        <div className="relative overflow-hidden min-h-screen">
+        <div className="relative overflow-hidden">
             {/* Primary gradient background */}
             <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 via-green-50 to-white">
                 {/* Subtle color overlay for depth */}
@@ -64,8 +63,11 @@ const Hero = () => {
                 }}
             />
 
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-0 min-h-[80vh] items-center overflow-hidden">
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-0 items-center overflow-hidden
+                        pt-24 md:pt-28 pb-12"
+                >
                     {/* Text Content */}
                     <AnimatePresence mode='wait'>
                         <motion.div
@@ -74,11 +76,11 @@ const Hero = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.5 }}
-                            className="relative z-10 space-y-6"
+                            className="relative z-10 space-y-4"
                         >
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-light leading-tight">
                                 {/* First part of the title */}
-                                <span className="block text-gray-800 mb-2">
+                                <span className="block text-gray-800 mb-2 mt-4 md:mt-0">
                                     {slides[currentSlide].titleParts.start}
                                 </span>
                                 {/* Highlighted part with gradient */}
@@ -92,7 +94,7 @@ const Hero = () => {
                             </p>
 
                             {/* Buttons */}
-                            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                            <div className="flex flex-col sm:flex-row gap-4 pt-2">
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
@@ -119,7 +121,7 @@ const Hero = () => {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -100 }}
                             transition={{ duration: 0.5 }}
-                            className="relative z-10"
+                            className="relative z-10 pt-6 md:pt-0"
                         >
                             <img
                                 src={slides[currentSlide].image}
@@ -127,7 +129,8 @@ const Hero = () => {
                                 className="w-full h-auto max-w-none md:max-w-[150%] lg:max-w-[180%] xl:max-w-[200%] md:-mr-20 lg:-mr-32 xl:-mr-40 transform md:translate-x-0 lg:translate-x-0 xl:translate-x-0"
                                 style={{
                                     objectFit: 'contain',
-                                    objectPosition: 'center right'
+                                    objectPosition: 'center right',
+                                    maxHeight: '70vh'
                                 }}
                             />
                         </motion.div>
