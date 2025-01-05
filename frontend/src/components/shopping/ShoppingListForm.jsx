@@ -87,33 +87,28 @@ const ShoppingListForm = () => {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Validate form before submission
+    
         if (!validateForm()) {
             return;
         }
-
+    
         setIsSubmitting(true);
-
+    
         try {
-            // Simulate API calls with progress steps
-            for (let i = 0; i < submissionSteps.length; i++) {
-                setSubmissionStep(i);
-                // Simulate processing time for each step
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            }
-
-            // Reset form after successful submission
-            setItems([{ id: 1, name: '', description: '', quantity: '', image: null }]);
-            setIsSubmitting(false);
-            setSubmissionStep(0);
-            alert('Shopping list submitted successfully!');
-
+            // Simulate API call to submit shopping list
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // In a real application, you would get the listId from the API response
+            const listId = '123'; // Example ID
+            
+            // Navigate to quote review
+            navigate(`/quote/${listId}`);
+            
         } catch (error) {
             console.error('Submission error:', error);
-            setIsSubmitting(false);
-            setSubmissionStep(0);
             alert('An error occurred while submitting your list. Please try again.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
