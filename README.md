@@ -30,10 +30,16 @@
 - Enhance admin dashboard
 - Add user profiles and history
 
+🤔 Optional considerations before frontend integration:
+
+- API rate limiting to prevent abuse
+- Request logging for debugging
+- Better error responses for image uploads
+- System notifications (e.g., when new list is submitted)
+
 For the Admin Dashboard:
-- Yes, using Django's built-in admin with customizations would be more efficient
-- We can enhance it gradually as needed
-- Keep it functional rather than overly complex
+- Use Django's built-in admin with customizations
+- Enhance it gradually as needed
 
 For User Authentication:
 - Leverage Django's authentication system
@@ -51,3 +57,7 @@ For User Authentication:
 - GET     /api/shopping-lists/{id}/status/ - Check list status
 - POST    /api/shopping-lists/{id}/accept_quote/ - Accept quote
 - POST    /api/shopping-lists/{id}/decline_quote/ - Decline quote
+
+## Documentation
+- [Swagger UI](http://127.0.0.1:8000/api/docs/)
+- [ReDoc UI](http://localhost:8000/api/redoc/)
