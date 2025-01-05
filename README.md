@@ -11,12 +11,12 @@
    - Admin dashboard basics
    - Authentication endpoints
 - Shopping List Backend
-   - Models for shopping lists and items
-   - API endpoints for list creation/management
+   - ✅ Models for shopping lists and items
+   - ✅ API endpoints for list creation/management
    - Image storage setup
 - Price Generation System
-   - Price calculation logic
-   - Quote generation
+   - ❌ Price calculation logic
+   - ✅ Quote generation
 
 3. Third Phase (Frontend-Backend Integration):
 - Connect shopping list creation to backend
@@ -39,3 +39,15 @@ For User Authentication:
 - Leverage Django's authentication system
 - Use Django REST Framework for API endpoints
 - Frontend just needs to handle forms and token storage
+
+# List operations
+GET     /api/shopping-lists/                    # List all shopping lists
+POST    /api/shopping-lists/                    # Create new shopping list
+GET     /api/shopping-lists/{id}/               # Get specific list
+PUT     /api/shopping-lists/{id}/               # Update list
+DELETE  /api/shopping-lists/{id}/               # Delete list
+
+# Custom actions
+GET     /api/shopping-lists/{id}/status/        # Check list status
+POST    /api/shopping-lists/{id}/accept_quote/  # Accept quote
+POST    /api/shopping-lists/{id}/decline_quote/ # Decline quote
