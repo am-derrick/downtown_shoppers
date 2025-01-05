@@ -3,6 +3,25 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import ShoppingList
 from .serializers import ShoppingListSerializer, QuoteSerializer
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
+
+@extend_schema_view(
+    create=extend_schema(
+        description='Create a new shopping list',
+        summary='Create shopping list',
+        tags=['Shopping lists']
+    ),
+    status=extend_schema(
+        description='Get the current status of a shopping list',
+        summary='Check list status',
+        tags=['Shopping Lists']
+    ),
+    accept_quote=extend_schema(
+        description='Accept a quote for a shopping list',
+        summary='Accept quote',
+        tags=['Quotes']
+    )
+)
 
 class ShoppingListViewSet(viewsets.ModelViewSet):
     """shopping list view"""
