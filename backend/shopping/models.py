@@ -25,12 +25,12 @@ class ShoppingList(models.Model):
         default='submitted'
     )
     customer_email = models.EmailField(
-        validators=[EmailValidator(message="Enter a valid email address")]
+        validators=[EmailValidator]
     )
     customer_phone = models.CharField(
         max_length=15,
-        validators=[validate_ug_phone],
-        help_text="Enter a valid phone number")
+        validators=[validate_ug_phone]
+    )
     delivery_address = models.TextField()
     special_instructions = models.TextField(blank=True)
 
