@@ -31,6 +31,14 @@ class ShoppingListSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['created_at', 'status']
 
+    def validate(self, data):
+        """Check that the shopping list has at least one item and is not empty"""
+        if not data.get('items', []):
+            raise serializers.ValidationError({
+                "items": "A shopping list must contain at least one item."
+            })
+        return data
+
     def create(self, validated_data):
         items_data = validated_data.pop('items')
         shopping_list = ShoppingList.objects.create(**validated_data)
