@@ -13,14 +13,14 @@ class ShoppingList(models.Model):
     status = models.CharField(
         max_length=20,
         choices=[
-            ('pending', 'Pending'),
-            ('quoted', 'Quoted'),
-            ('confirmed', 'Confirmed'),
-            ('processing', 'Processing'),
-            ('completed', 'Completed'),
-            ('cancelled', 'Cancelled')
+            ('submitted', 'List Submitted'),    # User submits list
+            ('processing', 'Admin Processing'), # Admin is working on pricing
+            ('quoted', 'Quote Ready'),         # Prices added, quote sent to customer
+            ('accepted', 'Quote Accepted'),    # Customer accepted the quote
+            ('declined', 'Quote Declined'),    # Customer declined the quote
+            ('completed', 'Order Completed')
         ],
-        default='pending'
+        default='submitted'
     )
     customer_email = models.EmailField() # For guest checkout
     customer_phone = models.CharField(max_length=15)
@@ -48,7 +48,8 @@ class ShoppingItem(models.Model):
         blank=True,
         null=True
     )
-    estimated_price = models.DecimalField(
+    price_added = models.BooleanField(default=False)
+    actual_price = models.DecimalField(
         max_digits=10,
         decimal_places=0,
         null=True,
@@ -58,6 +59,19 @@ class ShoppingItem(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.quantity})"
+    
+class ItemPrice(models.Model):
+    """class to keep track the prices of items and updates"""
+    name = models.CharField(max_length=255)
+    current_price = models.DecimalField(max_digits=10, decimal_places=0)
+    last_updated = models.DateTimeField(auto_now=True)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.current_price}"
+    
+    class Meat:
+        ordering = ['name']
 
 class Quote(models.Model):
     """class for price quotation"""
