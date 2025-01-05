@@ -25,7 +25,7 @@ class ShoppingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingList
         fields = [
-            'id', 'create_at', 'status', 'customer_email',
+            'id', 'created_at', 'status', 'customer_email',
             'customer_phone', 'delivery_address',
             'special_instructions', 'items'
         ]
