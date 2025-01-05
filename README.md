@@ -7,7 +7,7 @@
 
 2. Second Phase (Backend Focus):
 - Django User Authentication & Admin Setup
-   - User model customization
+   - ✅ User model customization
    - Admin dashboard basics
    - Authentication endpoints
 - Shopping List Backend
@@ -39,8 +39,3 @@ For User Authentication:
 - Leverage Django's authentication system
 - Use Django REST Framework for API endpoints
 - Frontend just needs to handle forms and token storage
-
-Would you like to:
-1. Start working on the Django backend setup?
-2. Begin with user authentication models?
-3. Set up the basic admin interface?
