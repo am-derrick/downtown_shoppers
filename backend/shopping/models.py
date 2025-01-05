@@ -81,12 +81,12 @@ class ItemPrice(models.Model):
     def __str__(self):
         return f"{self.name} - {self.current_price}"
     
-    class Meat:
+    class Meta:
         ordering = ['name']
 
 class Quote(models.Model):
     """class for price quotation"""
-    shoppping_list = models.OneToOneField(
+    shopping_list = models.OneToOneField(
         ShoppingList,
         on_delete=models.CASCADE,
         related_name='quote'
@@ -99,7 +99,7 @@ class Quote(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
         max_length=20,
-        choice=[
+        choices=[
             ('pending', 'Pending'),
             ('accepted', 'Accepted'),
             ('declined', 'Declined'),
