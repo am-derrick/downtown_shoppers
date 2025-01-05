@@ -11,7 +11,7 @@ class ShoppingList(models.Model):
         primary_key=True,
         default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(
         max_length=20,
         choices=[
@@ -39,6 +39,11 @@ class ShoppingList(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['status']),
+            models.Index(fields=['customer_email']),
+        ]
 
 class ShoppingItem(models.Model):
     """class for a shopping item"""
@@ -48,7 +53,10 @@ class ShoppingItem(models.Model):
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255)
-    quantity = models.CharField(max_length=100)
+    quantity = models.CharField(
+        max_length=100,
+        help_text="Specify quantity (e.g., '2 kg', '3 pieces')"
+        )
     description = models.TextField(blank=True)
     image = models.ImageField(
         upload_to='shopping_items/%d/%m/%Y',
@@ -60,7 +68,8 @@ class ShoppingItem(models.Model):
         max_digits=10,
         decimal_places=0,
         null=True,
-        blank=True
+        blank=True,
+        help_text="Price in UGX"
     )
     notes = models.TextField(blank=True)
 
@@ -90,6 +99,10 @@ class ItemPrice(models.Model):
     
     class Meta:
         ordering = ['name']
+        indexes = [
+            models.Index(fields=['name']),
+            models.Index(fields=['-last_updated']),
+        ]
 
 class Quote(models.Model):
     """class for price quotation"""
