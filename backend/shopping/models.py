@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models import Q
 import uuid
+from django.core.validators import EmailValidator
+from .validators import validate_ug_phone
 
 class ShoppingList(models.Model):
     """Class for the shopping list with list of
@@ -22,8 +24,13 @@ class ShoppingList(models.Model):
         ],
         default='submitted'
     )
-    customer_email = models.EmailField() # For guest checkout
-    customer_phone = models.CharField(max_length=15)
+    customer_email = models.EmailField(
+        validators=[EmailValidator(message="Enter a valid email address")]
+    )
+    customer_phone = models.CharField(
+        max_length=15,
+        validators=[validate_ug_phone],
+        help_text="Enter a valid phone number")
     delivery_address = models.TextField()
     special_instructions = models.TextField(blank=True)
 
