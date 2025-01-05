@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.text import slugify
+from django.db.models import Q
 import uuid
 
 class ShoppingList(models.Model):
@@ -59,6 +59,17 @@ class ShoppingItem(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.quantity})"
+    
+    def suggest_price(self):
+        """Suggest price based on existing db price entries"""
+        similar_items = ItemPrice.objects.filter(
+            Q(name__icontains=self.name) |
+            Q(name__iexact=self.name)
+        ).order_by('-last_updated')
+
+        if similar_items.exists():
+            return similar_items.first().current_price
+        return None
     
 class ItemPrice(models.Model):
     """class to keep track the prices of items and updates"""
