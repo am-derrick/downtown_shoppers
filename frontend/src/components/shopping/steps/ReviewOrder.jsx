@@ -1,6 +1,10 @@
-import React from "react";
+import React from 'react';
 
 export const ReviewOrder = ({ formData }) => {
+    if (!formData.items.length) {
+        return <div>No items to review</div>;
+    }
+    
     return (
         <div className="space-y-8">
             <h2 className="text-2xl font-light mb-6">Review Your Order</h2>
@@ -18,18 +22,20 @@ export const ReviewOrder = ({ formData }) => {
                                     <p className="text-sm text-gray-500 mt-1">{item.description}</p>
                                 )}
                             </div>
-                            {item.image && <div className="w-16 h-16">
-                                <img 
-                                    src={URL.createObjectURL(item.image)} 
-                                    alt={item.name}
-                                    className="w-full h-full object-cover rounded-lg"
-                                />
-                            </div>}
+                            {item.image && (
+                                <div className="w-16 h-16">
+                                    <img 
+                                        src={URL.createObjectURL(item.image)} 
+                                        alt={item.name}
+                                        className="w-full h-full object-cover rounded-lg"
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}
             </div>
-    
+
             {/* Delivery Details Summary */}
             <div className="space-y-4">
                 <h3 className="text-lg font-medium">Delivery Details</h3>
@@ -42,7 +48,7 @@ export const ReviewOrder = ({ formData }) => {
                     )}
                 </div>
             </div>
-    
+
             {/* Next Steps Information */}
             <div className="bg-yellow-50 p-4 rounded-lg">
                 <h3 className="text-lg font-medium mb-2">What happens next?</h3>
@@ -55,4 +61,4 @@ export const ReviewOrder = ({ formData }) => {
             </div>
         </div>
     );
-}
+};
