@@ -1,0 +1,95 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+{% load dashboard_tags %}
+
+{% block title %}Shopping List Details{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Shopping List #{{ shopping_list.id }}</h5>
+        <div class="status-badge badge bg-{{ shopping_list.status|status_color }}">
+            {{ shopping_list.get_status_display }}
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Customer Information -->
+        <div class="customer-info mb-4">
+            <h6>Customer Details</h6>
+            <p>Email: {{ shopping_list.customer_email }}</p>
+            <p>Phone: {{ shopping_list.customer_phone }}</p>
+            <p>Address: {{ shopping_list.delivery_address }}</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions mb-4">
+            {% if shopping_list.status == 'submitted' %}
+                <form method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="start_processing">
+                    <button type="submit" class="btn btn-primary">
+                        Start Processing
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+
+        <!-- Items List -->
+        <div class="items-list">
+            <h6>Items ({{ items_priced }}/{{ total_items }} priced)</h6>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in shopping_list.items.all %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>
+                            {% if item.price_added %}
+                                UGX {{ item.actual_price|intcomma }}
+                            {% else %}
+                                Not priced
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not item.price_added %}
+                                <form method="POST" class="price-form d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="mark_priced">
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" name="price" 
+                                               class="form-control form-control-sm" 
+                                               placeholder="Enter price">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                                            Add Price
+                                        </button>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Create Quote Button -->
+        {% if shopping_list.status == 'processing' and items_priced == total_items %}
+            <div class="mt-4">
+                <a href="{% url 'dashboard:create_quote' shopping_list.id %}" 
+                   class="btn btn-success">
+                    Create Quote
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+{% load dashboard_tags %}
+
+{% block title %}Shopping Lists{% endblock %}
+
+{% block page_title %}Shopping Lists{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <!-- Status Filter -->
+        <form method="get" class="d-flex gap-2 align-items-center">
+            <select name="status" class="form-select form-select-sm" style="max-width: 200px;">
+                <option value="">All Statuses</option>
+                {% for status_value, status_label in status_choices %}
+                <option value="{{ status_value }}" {% if status_value == current_status %}selected{% endif %}>
+                    {{ status_label }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <!-- Lists Table -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for list in lists %}
+                    <tr>
+                        <td class="text-muted">{{ list.id|truncatechars:8 }}</td>
+                        <td>
+                            <div>{{ list.customer_email }}</div>
+                            <small class="text-muted">{{ list.customer_phone }}</small>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge rounded-pill bg-light text-dark">
+                                    {{ list.items.count }} items
+                                </span>
+                                <span class="badge rounded-pill bg-success">
+                                    {{ list.priced_items_count }} priced
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ list.status }}">
+                                {{ list.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div>{{ list.created_at|date:"M d, Y" }}</div>
+                            <small class="text-muted">{{ list.created_at|time:"H:i" }}</small>
+                        </td>
+                        <td>
+                            <a href="{% url 'dashboard:list_detail' list.pk %}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox h4 d-block"></i>
+                            No shopping lists found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
