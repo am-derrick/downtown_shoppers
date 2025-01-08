@@ -1,0 +1,102 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+{% load dashboard_tags %}
+
+{% block title %}Quotes{% endblock %}
+
+{% block page_title %}Quotes{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <!-- Status Filter -->
+        <form method="get" class="d-flex gap-2 align-items-center">
+            <select name="status" class="form-select form-select-sm" style="max-width: 200px;">
+                <option value="">All Statuses</option>
+                {% for status_value, status_label in status_choices %}
+                <option value="{{ status_value }}" {% if status_value == current_status %}selected{% endif %}>
+                    {{ status_label }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Quote ID</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Expires</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quote in quotes %}
+                    <tr>
+                        <td>{{ quote.id|truncatechars:8 }}</td>
+                        <td>
+                            <div>{{ quote.shopping_list.customer_email }}</div>
+                            <small class="text-muted">{{ quote.shopping_list.customer_phone }}</small>
+                        </td>
+                        <td>
+                            <div>UGX {{ quote.total|intcomma }}</div>
+                            <small class="text-muted">
+                                Items: {{ quote.shopping_list.items.count }}
+                            </small>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ quote.status|status_color }}">
+                                {{ quote.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div>{{ quote.created_at|date:"M d, Y" }}</div>
+                            <small class="text-muted">{{ quote.created_at|time:"H:i" }}</small>
+                        </td>
+                        <td>
+                            {% if quote.status == 'pending' %}
+                                {% if quote.expires_at < now %}
+                                    <span class="text-danger">
+                                        Expired {{ quote.expires_at|timesince }} ago
+                                    </span>
+                                {% else %}
+                                    <span class="text-warning">
+                                        Expires in {{ quote.expires_at|timeuntil }}
+                                    </span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">--</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'dashboard:list_detail' quote.shopping_list.pk %}" 
+                                   class="btn btn-outline-primary">
+                                    <i class="bi bi-eye"></i> View List
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            <div class="text-muted">
+                                <i class="bi bi-receipt h4 d-block"></i>
+                                No quotes found
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
