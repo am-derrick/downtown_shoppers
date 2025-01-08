@@ -64,13 +64,9 @@
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="mark_priced">
                                     <input type="hidden" name="item_id" value="{{ item.id }}">
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" name="price" 
-                                               class="form-control form-control-sm" 
-                                               placeholder="Enter price">
-                                        <button type="submit" class="btn btn-sm btn-outline-primary">
-                                            Add Price
-                                        </button>
+                                    <div class="input-group">
+                                        <input type="number" name="price" class="form-control" value="2000">
+                                        <button type="submit" class="btn btn-outline-primary">Add Price</button>
                                     </div>
                                 </form>
                             {% endif %}
