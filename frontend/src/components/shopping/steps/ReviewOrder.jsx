@@ -4,7 +4,7 @@ export const ReviewOrder = ({ formData }) => {
     if (!formData.items.length) {
         return <div>No items to review</div>;
     }
-    
+
     return (
         <div className="space-y-8">
             <h2 className="text-2xl font-light mb-6">Review Your Order</h2>
