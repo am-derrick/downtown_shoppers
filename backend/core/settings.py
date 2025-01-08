@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'shopping',
     'drf_spectacular',
     'django.contrib.humanize',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -46,7 +47,10 @@ MIDDLEWARE = [
 ]
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'dashboard/static'),
+]
 
 # Media files settings
 MEDIA_URL = '/media/'
