@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import shopperMan from '../../assets/images/shopping_man_1.png';
 import deliveryMan from '../../assets/images/delivery_man.png';
-import cyclerMan from '../../assets/images/cycler_man.png'
+import liftLady from '../../assets/images/lift_lady.png'
 
 const Hero = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -26,7 +26,7 @@ const Hero = () => {
             description: "We carefully select and deliver quality products to your doorstep."
         },
         {
-            image: cyclerMan,
+            image: liftLady,
             titleParts: {
                 start: "Professional",
                 highlighted: "Service",
