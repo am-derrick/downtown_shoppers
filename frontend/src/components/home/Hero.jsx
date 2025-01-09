@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-
 import shopperMan from '../../assets/images/shopping_man_1.png';
 import deliveryMan from '../../assets/images/delivery_man.png';
 import cyclerMan from '../../assets/images/cycler_man.png'
@@ -95,13 +95,16 @@ const Hero = () => {
 
                             {/* Buttons */}
                             <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                                <Link to="/shopping">
                                 <motion.button
+                                    href="/shopping" 
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     className="px-8 py-3 bg-gradient-to-r from-yellow-400 to-green-400 text-white rounded-full hover:shadow-lg transition-all duration-300"
                                 >
                                     Start Shopping
                                 </motion.button>
+                                </Link>
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
