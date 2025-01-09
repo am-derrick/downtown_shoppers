@@ -118,6 +118,66 @@ main {
 /* Tables */
 .table {
     margin: 0;
+    --bs-table-hover-bg: rgba(0, 0, 0, 0.02);
+}
+
+/* Table improvements */
+.table td {
+    padding: 1rem 1rem;
+    vertical-align: middle;
+    line-height: 1.2;
+}
+
+.table th {
+    padding: 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: #666;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ID column style */
+.table td.text-muted {
+    font-family: 'SF Mono', 'Consolas', monospace;
+    font-size: 0.85rem;
+}
+
+/* Customer info styling */
+.customer-email {
+    font-weight: 500;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+}
+
+.customer-phone {
+    font-size: 0.85rem;
+    color: #718096;
+}
+
+/* View button styling */
+.btn-view {
+    padding: 0.4rem 1rem;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #4a5568;
+    transition: all 0.2s;
+}
+
+.btn-view:hover {
+    background-color: #f7fafc;
+    border-color: #cbd5e0;
+    color: #2d3748;
+}
+
+.btn-view i {
+    font-size: 0.875rem;
 }
 
 .table thead th {

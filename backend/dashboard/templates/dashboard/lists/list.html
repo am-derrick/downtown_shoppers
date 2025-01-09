@@ -56,7 +56,7 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-{{ list.status }}">
+                            <span class="badge bg-{{ list.status|status_color }}">
                                 {{ list.get_status_display }}
                             </span>
                         </td>
