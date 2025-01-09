@@ -85,41 +85,34 @@
         {% if lists.has_other_pages %}
         <nav aria-label="Page navigation" class="mt-4">
             <ul class="pagination justify-content-center">
-                {% if lists.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ lists.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link" aria-hidden="true">&laquo;</span>
-                    </li>
-                {% endif %}
+                <!-- Previous button -->
+                <li class="page-item {% if not lists.has_previous %}disabled{% endif %}">
+                    <a class="page-link" href="{% if lists.has_previous %}?page={{ lists.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% else %}#{% endif %}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
                 
-                {% for num in lists.paginator.page_range %}
-                    {% if lists.number == num %}
-                        <li class="page-item active" aria-current="page">
-                            <span class="page-link">{{ num }}</span>
+                <!-- Page numbers -->
+                {% for page in page_range %}
+                    {% if page == '...' %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
                         </li>
                     {% else %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ num }}{% if current_status %}&status={{ current_status }}{% endif %}">{{ num }}</a>
+                        <li class="page-item {% if lists.number == page %}active{% endif %}">
+                            <a class="page-link" href="?page={{ page }}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                {{ page }}
+                            </a>
                         </li>
                     {% endif %}
                 {% endfor %}
                 
-                {% if lists.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ lists.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link" aria-hidden="true">&raquo;</span>
-                    </li>
-                {% endif %}
+                <!-- Next button -->
+                <li class="page-item {% if not lists.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{% if lists.has_next %}?page={{ lists.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% else %}#{% endif %}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         {% endif %}

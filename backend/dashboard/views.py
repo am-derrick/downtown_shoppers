@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.db.models import Count, Q
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
+from dashboard.utils import get_page_range
 
 
 def login_view(request):
@@ -53,19 +54,20 @@ def shopping_list_view(request):
     if status:
         lists = lists.filter(status=status)
 
-    lists = lists.order_by('-created_at')
-
-    paginator = Paginator(lists, 10)
-    
+    paginator = Paginator(lists.order_by('-created_at'), 15)
     page = request.GET.get('page')
-    page_obj = paginator.get_page(page)
+    lists = paginator.get_page(page)
+
+    # Add page range with ellipsis
+    page_range = get_page_range(lists)
 
     status_choices = ShoppingList._meta.get_field('status').choices
 
     context = {
-        'lists': page_obj,
+        'lists': lists,
         'current_status': status,
-        'status_choices': status_choices
+        'status_choices': status_choices,
+        'page_range': page_range
     }
     return render(request, 'dashboard/lists/list.html', context)
 
