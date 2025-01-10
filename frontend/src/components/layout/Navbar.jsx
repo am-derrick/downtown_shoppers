@@ -103,7 +103,7 @@ const Navbar = () => {
 
                         {/* CTA Button */}
                         <Button 
-                            href="/start-shopping" 
+                            href="/shopping" 
                             variant="primary"
                             size="md"
                             className="hidden md:block"

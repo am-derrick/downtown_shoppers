@@ -2,7 +2,15 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, AlertCircle } from 'lucide-react';
 
-const QuotePreview = ({ items, estimatedTotal, deliveryFee, serviceFee }) => {
+const QuotePreview = ({
+    items,
+    estimatedTotal,
+    deliveryFee,
+    serviceFee,
+    onAccept,
+    onDecline,
+    loading,
+}) => {
     // Calculate totals including all fees
     const calculateTotal = () => {
         return estimatedTotal + deliveryFee + serviceFee;
@@ -23,8 +31,11 @@ const QuotePreview = ({ items, estimatedTotal, deliveryFee, serviceFee }) => {
                         <div className="flex-1">
                             <p className="text-gray-900">{item.name}</p>
                             <p className="text-sm text-gray-500">{item.quantity}</p>
+                            {item.notes && (
+                                <p className="text-sm text-gray-400 italic">{item.notes}</p>
+                            )}
                         </div>
-                        <p className="text-gray-600">~${item.estimatedPrice}</p>
+                        <p className="text-gray-600">UGX{item.estimatedPrice}</p>
                     </div>
                 ))}
             </div>
@@ -33,19 +44,19 @@ const QuotePreview = ({ items, estimatedTotal, deliveryFee, serviceFee }) => {
             <div className="space-y-3 border-t border-gray-100 pt-4">
                 <div className="flex justify-between text-gray-600">
                     <span>Estimated Items Total</span>
-                    <span>UGX{estimatedTotal}</span>
+                    <span>UGX {estimatedTotal}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                     <span>Delivery Fee</span>
-                    <span>UGX{deliveryFee}</span>
+                    <span>UGX {deliveryFee}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                     <span>Service Fee</span>
-                    <span>UGX{serviceFee}</span>
+                    <span>UGX {serviceFee}</span>
                 </div>
                 <div className="flex justify-between font-medium text-lg pt-3 border-t border-gray-100">
                     <span>Total</span>
-                    <span>UGX{calculateTotal()}</span>
+                    <span>UGX {calculateTotal()}</span>
                 </div>
             </div>
 
@@ -66,11 +77,19 @@ const QuotePreview = ({ items, estimatedTotal, deliveryFee, serviceFee }) => {
 
             {/* Action Buttons */}
             <div className="mt-8 space-y-3">
-                <button className="w-full bg-gradient-to-r from-yellow-400 to-green-400 text-white py-3 rounded-lg hover:shadow-lg transition-shadow">
-                    Proceed to Checkout
+                <button
+                    onClick={onAccept}
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-yellow-400 to-green-400 text-white py-3 rounded-lg hover:shadow-lg transition-shadow"
+                >
+                    {loading ? 'Processing..': 'Accept Quote'}
                 </button>
-                <button className="w-full border border-gray-200 text-gray-600 py-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    Modify List
+                <button
+                    onClick={onDecline}
+                    disabled={loading}
+                    className="w-full border border-gray-200 text-gray-600 py-3 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                    Decline Quote
                 </button>
             </div>
         </motion.div>

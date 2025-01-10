@@ -3,7 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import ShoppingList
 from .serializers import ShoppingListSerializer, QuoteSerializer
-from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
+from drf_spectacular.utils import extend_schema, extend_schema_view
+from django.utils import timezone
 
 @extend_schema_view(
     create=extend_schema(
@@ -57,8 +58,25 @@ class ShoppingListViewSet(viewsets.ModelViewSet):
             'status': shopping_list.status,
             'items_total': shopping_list.items.count(),
             'items_priced': shopping_list.items.filter(price_added=True).count(),
-            'last_update': shopping_list.updated_at
+            'last_update': shopping_list.updated_at,
+            'customer_email': shopping_list.customer_email,
+            'customer_phone': shopping_list.customer_phone,
+            'delivery_address': shopping_list.delivery_address,
+            'special_instructions': shopping_list.special_instructions,
         }
+
+        items_data = []
+        for item in shopping_list.items.all():
+            item_data = {
+                'name': item.name,
+                'quantity': item.quantity,
+                'description': item.description,
+                'notes': item.notes,
+                'price': item.actual_price or 0
+            }
+            items_data.append(item_data)
+        
+        response_data['items'] = items_data
 
         # Include quote if available
         if hasattr(shopping_list, 'quote'):
