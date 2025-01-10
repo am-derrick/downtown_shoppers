@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import { motion } from 'framer-motion';
 import { useShoppingListValidation } from '../../hooks/useShoppingListValidation';
 import { shoppingListAPI } from '../../services/api';
@@ -10,6 +11,8 @@ import SubmissionProgress from './SubmissionProgress';
 import { isValidUgandanPhone } from '../../utils/validation';
 
 const ShoppingListForm = () => {
+    const navigate = useNavigate();
+
     // Form data state
     const [formData, setFormData] = useState({
         customer_email: '',
@@ -166,8 +169,6 @@ const ShoppingListForm = () => {
         setError(null);
         
         try {
-            console.log('Current form data:', formData);
-
             // Format items array to match API requirements
             const submitData = {
                 customer_email: formData.customer_email.trim(),
@@ -183,30 +184,18 @@ const ShoppingListForm = () => {
                 }))
             };
 
-            console.log('Submitting cleaned data:', submitData);
-
             const response = await shoppingListAPI.createList(submitData);
             console.log('Submission successful', response);
-            
-            // Reset form
-            setFormData({
-                customer_email: '',
-                customer_phone: '',
-                delivery_address: '',
-                special_instructions: '',
-                items: [
-                    {
-                        id: Date.now(),
-                        name: '',
-                        description: '',
-                        quantity: '',
-                        image: null,
-                        notes: ''
-                    }
-                ]
-            });
+
+            if (response && response.id) {
+                // Successfully created, navigate to quote page
+                navigate(`/quote/${response.id}`);
+            } else {
+                throw new Error('No ID received from server');
+            }
             
         } catch (error) {
+            console.error('Submission error details:', error);
             let errorMessage = 'Failed to submit shopping list';
         
             if (error.response?.data) {
