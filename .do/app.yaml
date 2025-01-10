@@ -1,0 +1,53 @@
+name: downtown-shopping
+services:
+  - name: backend
+    github:
+      branch: prod
+      deploy_on_push: true
+      repo: am-derrick/downtown_shoppers
+    source_dir: backend
+    environment_slug: python
+    build_command: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    run_command: gunicorn core.wsgi:application
+    envs:
+      - key: DJANGO_SETTINGS_MODULE
+        value: core.settings
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ${APP_DOMAIN}
+      - key: DATABASE_URL
+        value: ${db.DATABASE_URL}
+      - key: DJANGO_SECRET_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: ${do-secret-key}
+    mounts:
+      - source: media
+        target: /opt/render/project/src/media
+
+  - name: frontend
+    github:
+      branch: prod
+      deploy_on_push: true
+      repo: am-derrick/downtown_shoppers
+    source_dir: frontend
+    environment_slug: node-js
+    build_command: npm ci && npm run build
+    output_dir: dist
+    envs:
+      - key: VITE_API_URL
+        value: ${APP_URL}/api
+
+databases:
+  - engine: PG
+    name: db
+    production: true
+
+volumes:
+  - name: media
+    type: DO_VOLUME
+    size: 1Gi
+    mount_path: /media
