@@ -6,6 +6,9 @@ import os
 import dj_database_url
 from pathlib import Path
 
+# For debuggging
+print("DATABASE_URL:", os.getenv('DATABASE_URL'))
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -95,20 +98,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 DATABASE_URL = os.getenv('DATABASE_URL')
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-        )
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default='sqlite:////' + os.path.join(BASE_DIR, 'db.sqlite3'),
+        conn_max_age=600,
+    )
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
