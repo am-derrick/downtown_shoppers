@@ -10,7 +10,7 @@ services:
     build_command: |
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
-    run_command: run_command: cd backend && gunicorn --worker-tmp-dir /dev/shm core.wsgi:application
+    run_command: run_command: cd backend && gunicorn --worker-tmp-dir /dev/shm core.wsgi
     envs:
       - key: DJANGO_SETTINGS_MODULE
         value: core.settings
