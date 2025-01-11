@@ -20,10 +20,15 @@ services:
         value: ${APP_DOMAIN}
       - key: DATABASE_URL
         value: ${db.DATABASE_URL}
+        scope: RUN_AND_BUILD_TIME
       - key: DJANGO_SECRET_KEY
         scope: RUN_AND_BUILD_TIME
         type: SECRET
         value: ${do-secret-key}
+      - key: DEVELOPMENT_MODE
+        value: "False"
+      - key: DEBUG
+        value: "False"
     mounts:
       - source: media
         target: /opt/render/project/src/media
