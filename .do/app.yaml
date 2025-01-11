@@ -10,7 +10,7 @@ services:
     build_command: |
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
-    run_command: Procfile
+    run_command: gunicorn --worker-tmp-dir /dev/shm core.wsgi:application
     envs:
       - key: DJANGO_SETTINGS_MODULE
         value: core.settings
@@ -38,6 +38,7 @@ services:
     source_dir: frontend
     environment_slug: node-js
     build_command: npm ci && npm run build
+    run_command: npx serve -s dist
     output_dir: dist
     envs:
       - key: VITE_API_URL
