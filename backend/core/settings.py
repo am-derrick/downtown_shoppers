@@ -65,9 +65,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Allowed hosts using Vite's default port and production domain
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    # Production domain:
-    f"https://{os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')[0]}"
+    "http://localhost:5173", # Development
+    "https://downtown-shoppers.vercel.app", # Production frontend
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
 ROOT_URLCONF = 'core.urls'
