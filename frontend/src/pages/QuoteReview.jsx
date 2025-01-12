@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { shoppingListAPI } from '../services/api';
 import QuotePreview from '../components/shopping/QuotePreview';
@@ -11,45 +11,75 @@ const QuoteReview = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [actionLoading, setActionLoading] = useState(false);
+    const pollingInterval = useRef(null);
 
     useEffect(() => {
         const checkQuoteStatus = async () => {
             try {
                 console.log('Fetching quote for listId:', listId);
                 const response = await shoppingListAPI.checkStatus(listId);
-                console.log('Raw API Response:', response);
 
                 if (!response) {
                     throw new Error('No response received from server');
                 }
-                console.log('API URL:', `${import.meta.env.VITE_API_URL}/shopping-lists/${listId}/status/`);
+                console.log('Current status:', response.status);
 
                 if (response.status === 'quoted') {
+                    // Clear polling if quote is ready
+                    if (pollingInterval.current) {
+                        clearInterval(pollingInterval.current);
+                        pollingInterval.current = null;
+                    }
+                    
                     // Store all necessary data including customer details
                     const transformedData = {
-                        ...response,  // Keep all original data
+                        ...response,
                         items: response.quote.items || [],
                         estimatedTotal: parseFloat(response.quote.subtotal) || 0,
                         deliveryFee: parseFloat(response.quote.delivery_fee) || 0,
                         serviceFee: parseFloat(response.quote.service_fee) || 0
                     };
-                    console.log('Transformed Data:', JSON.stringify(transformedData, null, 2));
                     setQuoteData(transformedData);
                     setLoading(false);
                 } else if (['accepted', 'declined', 'completed'].includes(response.status)) {
+                    // Clear polling and navigate away
+                    if (pollingInterval.current) {
+                        clearInterval(pollingInterval.current);
+                        pollingInterval.current = null;
+                    }
                     navigate('/shopping', {
                         state: { message: `This quote has already been ${response.status}.` }
                     });
+                } else if (response.status === 'submitted') {
+                    // Keep loading state if still submitted
+                    setLoading(true);
                 }
             } catch (err) {
-                console.error('Full error object:', err);
-                console.error('Error response:', err.response);
+                console.error('Error fetching quote:', err);
                 setError(`Failed to load quote. ${err.message}`);
                 setLoading(false);
+                // Clear polling on error
+                if (pollingInterval.current) {
+                    clearInterval(pollingInterval.current);
+                    pollingInterval.current = null;
             }
         };
 
+        // Initial check
         checkQuoteStatus();
+
+        // Start polling if not already polling
+        if (!pollingInterval.current) {
+            pollingInterval.current = setInterval(checkQuoteStatus, 5000); // Poll every 5 seconds
+        }
+
+        // Cleanup function
+        return () => {
+            if (pollingInterval.current) {
+                clearInterval(pollingInterval.current);
+                pollingInterval.current = null;
+            }
+        };
     }, [listId, navigate]);
 
     const handleAcceptQuote = async () => {
