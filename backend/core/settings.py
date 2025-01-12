@@ -182,3 +182,10 @@ SPECTACULAR_SETTINGS = {
 # Login settings
 LOGIN_URL = 'dashboard:login'
 LOGIN_REDIRECT_URL = 'dashboard:home'
+
+# Trusted origins
+CSRF_TRUSTED_ORIGINS = [
+    "https://downtown-shopping.org",
+    "https://www.downtown-shopping.org"
+]
+
