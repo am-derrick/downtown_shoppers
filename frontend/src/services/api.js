@@ -87,9 +87,12 @@ export const shoppingListAPI = {
 
     checkStatus: async (listId) => {
         try {
+            console.log('Making API call to:', `${api.defaults.baseURL}/shopping-lists/${listId}/status/`);
             const response = await api.get(`/shopping-lists/${listId}/status/`);
             return response.data;
         } catch (error) {
+            console.error('API Error:', error);
+            console.error('Error Response:', error.response);
             throw error.response?.data || { message: 'Error checking status' };
         }
     },
