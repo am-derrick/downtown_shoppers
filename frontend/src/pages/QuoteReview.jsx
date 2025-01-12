@@ -62,6 +62,7 @@ const QuoteReview = () => {
                 if (pollingInterval.current) {
                     clearInterval(pollingInterval.current);
                     pollingInterval.current = null;
+                }
             }
         };
 
