@@ -19,16 +19,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 DEBUG = os.getenv("DEBUG", "False") == "True"
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
-# Updated domains for the admin site and api
-ADMIN_DOMAIN = 'admin.downtown-shopping.org'
-API_DOMAIN = 'api.downtown-shopping.org'
-
+# Allowed hosts
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
-
-ALLOWED_HOSTS.extend([
-    ADMIN_DOMAIN,
-    API_DOMAIN
-])
 
 # Application definition
 INSTALLED_APPS = [
@@ -55,7 +47,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'core.middleware.DomainRoutingMiddleware',
 ]
 
 # Static files (CSS, JavaScript, Images)
