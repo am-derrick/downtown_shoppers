@@ -19,8 +19,16 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 DEBUG = os.getenv("DEBUG", "False") == "True"
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
+# Updated domains for the admin site and api
+ADMIN_DOMAIN = 'admin.downtown-shopping.org'
+API_DOMAIN = 'api.downtown-shopping.org'
+
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
+ALLOWED_HOSTS.extend([
+    ADMIN_DOMAIN,
+    API_DOMAIN
+])
 
 # Application definition
 INSTALLED_APPS = [
@@ -67,6 +75,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", # Development
     "https://downtown-shoppers.vercel.app", # Production frontend
+    "https://downtown-shopping.org",  # New production frontend
+    "https://www.downtown-shopping.org" # New production frontend with www
 ]
 
 CORS_ALLOW_CREDENTIALS = True
