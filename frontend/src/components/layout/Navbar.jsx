@@ -12,7 +12,7 @@ const Navbar = () => {
     const navigation = {
         main: [
             { label: 'How It Works', path: '/how-it-works' },
-            { label: 'Services', path: '/services' },
+            { label: 'Services', path: '/#services' },
             { label: 'About', path: '/about' }
         ],
         actions: [
@@ -24,12 +24,12 @@ const Navbar = () => {
             { 
                 icon: User, 
                 label: 'Account', 
-                path: '/account' 
+                path: '/#account' 
               },
               { 
                 icon: Heart, 
                 label: 'Wishlist', 
-                path: '/wishlist' 
+                path: '/#wishlist' 
               }
         ]
     };
