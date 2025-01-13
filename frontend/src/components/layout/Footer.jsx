@@ -1,21 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
-import logo from '../../assets/images/Downtown_Shoppers_logo.png';
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import Logo from '../common/Logo';
 
 const Footer = () => {
     const footerSections = {
         quickLinks: [
             { name: 'How It Works', path: '/how-it-works' },
-            { name: 'Services', path: '/services' },
+            { name: 'Services', path: '/#services' },
             { name: 'About', path: '/about' },
-            { name: 'FAQs', path: '/faqs' }
-        ],
-        services: [
-            { name: 'Personal Shopping', path: '/services/personal-shopping' },
-            { name: 'Gift Shopping', path: '/services/gift-shopping' },
-            { name: 'Corporate Services', path: '/services/corporate' },
-            { name: 'Bulk Orders', path: '/services/bulk-orders' }
+            { name: 'Start Shopping', path: '/shopping' }
         ],
         contactInfo: [
             { 
@@ -30,7 +24,33 @@ const Footer = () => {
             { 
                 icon: Mail, 
                 info: 'downtownshopping3@gmail.com',
-                link: 'mailto: downtownshopping3@gmail.com'
+                link: 'mailto:downtownshopping3@gmail.com'
+            }
+        ],
+        socialLinks: [
+            { 
+                icon: Facebook, 
+                name: 'Facebook',
+                link: 'https://facebook.com/downtownshoppers',
+                color: 'hover:bg-blue-50 hover:text-blue-600'
+            },
+            { 
+                icon: Instagram, 
+                name: 'Instagram',
+                link: 'https://instagram.com/downtown.shoppers',
+                color: 'hover:bg-pink-50 hover:text-pink-600'
+            },
+            { 
+                icon: Twitter, 
+                name: 'X',
+                link: 'https://x.com/downtownshop',
+                color: 'hover:bg-gray-50 hover:text-gray-900'
+            },
+            { 
+                icon: Linkedin, 
+                name: 'LinkedIn',
+                link: 'https://linkedin.com/company/downtown-shoppers',
+                color: 'hover:bg-blue-50 hover:text-blue-700'
             }
         ]
     };
@@ -42,28 +62,27 @@ const Footer = () => {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Main Footer Content */}
-                <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
                     {/* Company Info */}
                     <div className="space-y-6">
                         <Link to="/" className="block">
-                            <img 
-                                src={logo} 
-                                alt="Downtown Shoppers" 
-                                className="h-12 w-auto"
-                            />
+                            <Logo size="lg" />
                         </Link>
                         <p className="text-gray-600 text-sm max-w-xs">
                             Your trusted personal shopping assistant. We make shopping hassle-free.
                         </p>
                         {/* Social Links */}
-                        <div className="flex space-x-4">
-                            {[Facebook, Twitter, Instagram].map((Icon, index) => (
+                        <div className="flex flex-wrap gap-3">
+                            {footerSections.socialLinks.map((social) => (
                                 <a 
-                                    key={index}
-                                    href="#"
-                                    className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-yellow-50 hover:text-yellow-500 transition-colors"
+                                    key={social.name}
+                                    href={social.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 transition-colors ${social.color}`}
+                                    aria-label={social.name}
                                 >
-                                    <Icon className="w-5 h-5" />
+                                    <social.icon className="w-5 h-5" />
                                 </a>
                             ))}
                         </div>
@@ -80,23 +99,6 @@ const Footer = () => {
                                         className="text-gray-600 hover:text-gray-900 text-sm"
                                     >
                                         {link.name}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Services */}
-                    <div>
-                        <h3 className="text-lg font-medium mb-4">Our Services</h3>
-                        <ul className="space-y-3">
-                            {footerSections.services.map((service) => (
-                                <li key={service.path}>
-                                    <Link 
-                                        to={service.path}
-                                        className="text-gray-600 hover:text-gray-900 text-sm"
-                                    >
-                                        {service.name}
                                     </Link>
                                 </li>
                             ))}
