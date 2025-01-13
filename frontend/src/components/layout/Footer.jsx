@@ -24,13 +24,13 @@ const Footer = () => {
             },
             { 
                 icon: Phone, 
-                info: '(+256) 758859166 / 788175627',
+                info: '+256 766531370',
                 link: 'tel:+256758859166'
             },
             { 
                 icon: Mail, 
-                info: 'lambano5gp@gmail.com',
-                link: 'mailto:lambano5gp@gmail.com'
+                info: 'downtownshopping3@gmail.com',
+                link: 'mailto: downtownshopping3@gmail.com'
             }
         ]
     };
