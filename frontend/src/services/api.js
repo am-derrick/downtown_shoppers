@@ -5,7 +5,7 @@ const api = axios.create({
     headers: {
         'Content-Type': 'multipart/form-data',
     },
-    withCredentials: true
+    withCredentials: false
 });
 
 // Request interceptor for debugging
