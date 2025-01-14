@@ -144,12 +144,37 @@ const OrderConfirmation = () => {
                 </div>
 
                 <div className="mt-8">
-                    <button
-                        onClick={() => navigate('/shopping')}
-                        className="w-full bg-gradient-to-r from-yellow-400 to-green-400 text-white py-3 rounded-lg hover:shadow-lg transition-shadow"
-                    >
-                        Create New Shopping List
-                    </button>
+                <button
+                    onClick={() => {
+                        console.log('List ID:', listId);
+                        console.log('Order Data:', {
+                            total: orderData.total,
+                            subtotal: orderData.subtotal,
+                            delivery_fee: orderData.delivery_fee,
+                            service_fee: orderData.service_fee,
+                            items: orderData.items,
+                            customer: orderData.customer,
+                            status: orderData.status
+                        });
+                        
+                        navigate(`/order/payment/${listId}`, {
+                            state: {
+                                orderData: {
+                                    total: orderData.total,
+                                    subtotal: orderData.subtotal,
+                                    delivery_fee: orderData.delivery_fee,
+                                    service_fee: orderData.service_fee,
+                                    items: orderData.items,
+                                    customer: orderData.customer,
+                                    status: orderData.status
+                                }
+                            }
+                        });
+                    }}
+                    className="w-full bg-gradient-to-r from-yellow-400 to-green-400 text-white py-3 rounded-lg hover:shadow-lg transition-shadow"
+                >
+                    Proceed to Choose Payment Method
+                </button>
                 </div>
             </motion.div>
         </div>

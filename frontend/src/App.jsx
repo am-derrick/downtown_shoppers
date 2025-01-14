@@ -8,6 +8,8 @@ import OrderConfirmation from './pages/OrderConfirmation';
 import Account from './pages/Account';
 import HowItWorks from './pages/HowItWorks';
 import About from './pages/About';
+import Payment from './pages/Payment';
+import PaymentSummary from './pages/PaymentSummary';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/shopping" element={<Shopping />} />
           <Route path="/quote/:listId" element={<QuoteReview />} />
           <Route path="/order/confirm/:listId" element={<OrderConfirmation />} />
+          <Route path="/order/payment/:listId" element={<Payment />} />
+          <Route path="/order/payment-summary/:listId" element={<PaymentSummary />} />
           <Route path="/account" element={<Account />} />
         </Routes>
       </Layout>
