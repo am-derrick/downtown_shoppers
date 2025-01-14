@@ -1,8 +1,8 @@
-// src/pages/PaymentSummary.jsx
 import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Calendar, Check, Truck } from 'lucide-react';
+import { shoppingListAPI } from '@/services/api';
 
 function PaymentSummary() {
   const { listId } = useParams();
@@ -33,16 +33,11 @@ function PaymentSummary() {
   const handleConfirmOrder = async () => {
     setLoading(true);
     try {
-      // Here you would typically call your API to update the order
-      // await shoppingListAPI.updateOrder(listId, {
-      //   payment_method: paymentMethod,
-      //   status: 'confirmed'
-      // });
+      await shoppingListAPI.sendConfirmationEmail(listId);
 
-      // For now, just navigate to success
       navigate('/shopping', {
         state: { 
-          message: 'Order confirmed successfully! We will contact you shortly.',
+          message: 'Order confirmed successfully! Please check your email for order details.',
           orderData,
           paymentMethod,
           paymentDetails
@@ -50,7 +45,7 @@ function PaymentSummary() {
       });
     } catch (err) {
       console.error('Error confirming order:', err);
-      setError('Failed to confirm order. Please try again.');
+      setError(err.message || 'Failed to confirm order. Please try again.');
     } finally {
       setLoading(false);
     }
