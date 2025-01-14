@@ -35,10 +35,12 @@ function PaymentSummary() {
     try {
       await shoppingListAPI.sendConfirmationEmail(listId);
 
-      navigate('/shopping', {
+      navigate(`/order/success/${listId}`, {
         state: { 
-          message: 'Order confirmed successfully! Please check your email for order details.',
-          orderData,
+          orderData: {
+            ...orderData,
+            listId
+          },
           paymentMethod,
           paymentDetails
         }
