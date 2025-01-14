@@ -10,6 +10,7 @@ import HowItWorks from './pages/HowItWorks';
 import About from './pages/About';
 import Payment from './pages/Payment';
 import PaymentSummary from './pages/PaymentSummary';
+import OrderSuccess from './pages/OrderSuccess';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/order/confirm/:listId" element={<OrderConfirmation />} />
           <Route path="/order/payment/:listId" element={<Payment />} />
           <Route path="/order/payment-summary/:listId" element={<PaymentSummary />} />
+          <Route path="order/success/:listId" element={<OrderSuccess />} />
           <Route path="/account" element={<Account />} />
         </Routes>
       </Layout>
