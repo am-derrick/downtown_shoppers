@@ -3,14 +3,29 @@ import { motion } from 'framer-motion';
 
 const QuoteLoading = () => {
     const [dots, setDots] = useState('');
+    const [waitTime, setWaitTime] = useState(0);
 
     useEffect(() => {
-        const interval = setInterval(() => {
+        const dotsInterval = setInterval(() => {
             setDots(prev => prev.length >= 3 ? '' : prev + '.');
         }, 500);
 
-        return () => clearInterval(interval);
+        const waitInterval = setInterval(() => {
+            setWaitTime(prev => prev + 1);
+        }, 60000); // Increment wait time every minute
+
+        return () => {
+            clearInterval(dotsInterval);
+            clearInterval(waitInterval);
+        };
     }, []);
+
+    // Update the wait time message based on duration
+    const getWaitMessage = () => {
+        if (waitTime < 1) return "This usually takes about 5-10 minutes.";
+        if (waitTime < 5) return `You've been waiting for ${waitTime} minute${waitTime === 1 ? '' : 's'}. Please continue to wait.`;
+        return "We're taking longer than usual. Please continue to wait or contact support if needed.";
+    };
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-12">
@@ -46,7 +61,7 @@ const QuoteLoading = () => {
                         </div>
                         
                         <div className="text-sm text-gray-500">
-                            This usually takes about 15-30 minutes. You'll be automatically redirected when your quote is ready.
+                            {getWaitMessage()} You'll be automatically redirected when your quote is ready.
                         </div>
                     </div>
                 </div>

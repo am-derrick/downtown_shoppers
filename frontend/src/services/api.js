@@ -2,8 +2,36 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
-    headers: {}
+    headers: {
+        'Content-Type': 'multipart/form-data',
+    },
+    withCredentials: false
 });
+
+// Request interceptor for debugging
+api.interceptors.request.use(
+    (config) => {
+        console.log('Request URL:', config.url);
+        console.log('Request Headers:', config.headers);
+        return config;
+    },
+    (error) => {
+        console.error('Request Error:', error);
+        return Promise.reject(error);
+    }
+);
+
+// Response interceptor for debugging
+api.interceptors.response.use(
+    (response) => {
+        console.log('Response:', response);
+        return response;
+    },
+    (error) => {
+        console.error('Response Error:', error);
+        return Promise.reject(error);
+    }
+);
 
 export const shoppingListAPI = {
     createList: async (listData) => {
@@ -35,61 +63,23 @@ export const shoppingListAPI = {
                 }
             });
 
-            // Debug logging
-            console.log('FormData contents:');
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value instanceof File ? 'File object' : value}`);
-            }
-
             const response = await api.post('/shopping-lists/', formData);
             return response.data;
             
         } catch (error) {
-            console.error('API Error Response:', error.response?.data);
-            
-            if (error.response?.data) {
-                const errorData = error.response.data;
-                
-                // Error handling for nested serializer errors
-                if (Array.isArray(errorData.items)) {
-                    const itemErrors = errorData.items
-                        .map((item, index) => {
-                            if (typeof item === 'object') {
-                                return Object.entries(item)
-                                    .map(([field, errors]) => 
-                                        `Item ${index + 1} ${field}: ${errors.join(', ')}`
-                                    )
-                                    .join('\n');
-                            }
-                            return `Item ${index + 1}: ${item}`;
-                        })
-                        .filter(Boolean)
-                        .join('\n');
-                    
-                    throw new Error(itemErrors);
-                }
-                
-                // Other types of errors
-                const formattedError = Object.entries(errorData)
-                    .map(([key, value]) => {
-                        if (Array.isArray(value)) {
-                            return `${key}: ${value.join(', ')}`;
-                        }
-                        return `${key}: ${value}`;
-                    })
-                    .join('\n');
-                
-                throw new Error(formattedError);
-            }
-            throw error;
+            console.error('Detailed Error:', error.response?.data || error.message);
+            throw error.response?.data || error;
         }
     },
 
     checkStatus: async (listId) => {
         try {
+            console.log('Making API call to:', `${api.defaults.baseURL}/shopping-lists/${listId}/status/`);
             const response = await api.get(`/shopping-lists/${listId}/status/`);
             return response.data;
         } catch (error) {
+            console.error('API Error:', error);
+            console.error('Error Response:', error.response);
             throw error.response?.data || { message: 'Error checking status' };
         }
     },

@@ -10,7 +10,8 @@ services:
     build_command: |
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
-    run_command: gunicorn core.wsgi:application
+    run_command: |
+      PYTHONPATH=/workspace/backend gunicorn --chdir /workspace/backend --worker-tmp-dir /dev/shm core.wsgi:application --log-level debug
     envs:
       - key: DJANGO_SETTINGS_MODULE
         value: core.settings
@@ -18,9 +19,6 @@ services:
         value: "False"
       - key: DJANGO_ALLOWED_HOSTS
         value: ${APP_DOMAIN}
-      - key: DATABASE_URL
-        value: ${db.DATABASE_URL}
-        scope: RUN_AND_BUILD_TIME
       - key: DJANGO_SECRET_KEY
         scope: RUN_AND_BUILD_TIME
         type: SECRET
@@ -40,7 +38,11 @@ services:
       repo: am-derrick/downtown_shoppers
     source_dir: frontend
     environment_slug: node-js
-    build_command: npm ci && npm run build
+    build_command: |
+      npm ci
+      npm install serve
+      npm run build
+    run_command: serve -s dist
     output_dir: dist
     envs:
       - key: VITE_API_URL

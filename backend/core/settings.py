@@ -2,10 +2,11 @@
 Django settings for core project.
 """
 
+from django.core.management.utils import get_random_secret_key
 import os
 import sys
 from dotenv import load_dotenv
-from pathlib import Path
+import dj_database_url
 
 load_dotenv()
 
@@ -13,14 +14,14 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '*').split(',')
-
+# Allowed hosts
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 # Application definition
 INSTALLED_APPS = [
@@ -41,7 +42,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,18 +60,27 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-# Use WhiteNoise for static file serving
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 # Media files settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Allowed hosts using Vite's default port and production domain
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    # Production domain:
-    f"https://{os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')[0]}"
+    "http://localhost:5173", # Development
+    "https://downtown-shoppers.vercel.app", # Production frontend
+    "https://downtown-shopping.org",  # New production frontend
+    "https://www.downtown-shopping.org" # New production frontend with www
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -162,3 +171,10 @@ SPECTACULAR_SETTINGS = {
 # Login settings
 LOGIN_URL = 'dashboard:login'
 LOGIN_REDIRECT_URL = 'dashboard:home'
+
+# Trusted origins
+CSRF_TRUSTED_ORIGINS = [
+    "https://downtown-shopping.org",
+    "https://www.downtown-shopping.org"
+]
+

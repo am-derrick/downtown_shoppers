@@ -5,6 +5,8 @@ from .models import ShoppingList
 from .serializers import ShoppingListSerializer, QuoteSerializer
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 @extend_schema_view(
     create=extend_schema(
@@ -24,6 +26,7 @@ from django.utils import timezone
     )
 )
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ShoppingListViewSet(viewsets.ModelViewSet):
     """shopping list view"""
     queryset = ShoppingList.objects.all()
