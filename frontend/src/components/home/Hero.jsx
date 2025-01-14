@@ -105,13 +105,16 @@ const Hero = () => {
                                     Start Shopping
                                 </motion.button>
                                 </Link>
+                                <Link to="/how-it-works">
                                 <motion.button
+                                    href="/how-it-works" 
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     className="px-8 py-3 border-2 border-yellow-400/50 text-gray-700 rounded-full hover:border-green-400/50 transition-all duration-300"
                                 >
                                     Learn More
                                 </motion.button>
+                                </Link>
                             </div>
                         </motion.div>
                     </AnimatePresence>

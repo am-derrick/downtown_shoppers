@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import path from "path"; 
 import react from '@vitejs/plugin-react'; 
 
 export default defineConfig({
@@ -16,6 +17,11 @@ export default defineConfig({
         target: process.env.VITE_API_URL || 'http://localhost:8000',
         changeOrigin: true,
       }
+    },
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 });
