@@ -1,0 +1,26 @@
+Order Confirmation - #{{ order_number }}
+
+Dear {{ customer_name }},
+
+Thank you for your order. We're pleased to confirm that we've received your order and it's being processed.
+
+Order Details:
+{% for item in items %}
+- {{ item.name }} - {{ item.quantity }}
+{% endfor %}
+
+Subtotal: UGX {{ subtotal }}
+Delivery Fee: UGX {{ delivery_fee }}
+Service Fee: UGX {{ service_fee }}
+Total: UGX {{ total }}
+
+Delivery Information:
+Address: {{ delivery_address }}
+Payment Method: {{ payment_method }}
+
+We will contact you shortly to confirm your delivery time.
+
+If you have any questions, please don't hesitate to contact us.
+
+Best regards,
+Downtown Shoppers Team

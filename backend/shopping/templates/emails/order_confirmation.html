@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container { max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; }
+        .header { background: linear-gradient(90deg, #EAB308 0%, #22C55E 100%); color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background: #fff; }
+        .order-details { margin: 20px 0; }
+        .item { margin: 10px 0; padding: 10px; background: #f9f9f9; border-radius: 4px; }
+        .total { font-weight: bold; margin-top: 20px; background: #f5f5f5; padding: 15px; border-radius: 4px; }
+        .delivery-info { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Confirmation</h1>
+            <p>Order #{{ order_number }}</p>
+        </div>
+        <div class="content">
+            <p>Dear {{ customer_name }},</p>
+            <p>Thank you for shopping with Downtown Shoppers. We're pleased to confirm your order details below.</p>
+
+            <div class="order-details">
+                <h2>Order Details:</h2>
+                {% for item in items %}
+                <div class="item">
+                    <p><strong>{{ item.name }}</strong> - {{ item.quantity }}</p>
+                    {% if item.description %}<p>Description: {{ item.description }}</p>{% endif %}
+                    {% if item.notes %}<p>Notes: {{ item.notes }}</p>{% endif %}
+                    <p>Price: UGX {{ item.actual_price|floatformat:0 }}</p>
+                </div>
+                {% endfor %}
+
+                <div class="total">
+                    <p>Subtotal: UGX {{ quote.subtotal|floatformat:0 }}</p>
+                    <p>Delivery Fee: UGX {{ quote.delivery_fee|floatformat:0 }}</p>
+                    <p>Service Fee: UGX {{ quote.service_fee|floatformat:0 }}</p>
+                    <p style="font-size: 1.2em;">Total: UGX {{ quote.total|floatformat:0 }}</p>
+                </div>
+            </div>
+
+            <div class="delivery-info">
+                <h2>Delivery Information:</h2>
+                <p><strong>Address:</strong> {{ delivery_address }}</p>
+                <p><strong>Phone:</strong> {{ customer_phone }}</p>
+                {% if special_instructions %}
+                <p><strong>Special Instructions:</strong> {{ special_instructions }}</p>
+                {% endif %}
+            </div>
+
+            <p>Our team will contact you shortly to confirm delivery details. If you have any questions, please don't hesitate to contact us.</p>
+
+            <p>Best regards,<br>Downtown Shoppers Team</p>
+        </div>
+    </div>
+</body>
+</html>

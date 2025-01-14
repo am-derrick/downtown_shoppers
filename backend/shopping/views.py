@@ -7,6 +7,9 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 
 @extend_schema_view(
     create=extend_schema(
@@ -139,3 +142,49 @@ class ShoppingListViewSet(viewsets.ModelViewSet):
         if email is not None:
             queryset = queryset.filter(customer_email=email())
         return queryset.order_by('-created_at')
+    
+    @action(detail=True, methods=['post'])
+    def send_confirmation(self, request, pk=None):
+        """Sends order confirmation email to the customer"""
+        shopping_list = self.get_object()
+        quote = shopping_list.quote
+
+        if not quote:
+            return Response(
+                {"error": "No quote found for this order"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        context = {
+            'order_number': str(shopping_list.id),
+            'customer_name': shopping_list.customer_email.split('@')[0],
+            'items': shopping_list.items.all(),
+            'quote': quote,
+            'delivery_address': shopping_list.delivery_address,
+            'special_instructions': shopping_list.special_instructions,
+            'customer_phone': shopping_list.customer_phone,
+            'customer_email': shopping_list.customer_email,
+            'created_at': shopping_list.created_at,
+        }
+
+        try:
+            email_html = render_to_string('emails/order_confirmation.html', context)
+            email_text = render_to_string('emails/order_confirmation.txt', context)
+
+            send_mail(
+                subject=f'Downtown Shoppers - Order Confirmation #{shopping_list.id}',
+                message=email_text,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[shopping_list.customer_email],
+                html_message=email_html,
+                fail_silently=False,
+            )
+
+            return Response({
+                'message': 'Order confirmation email sent successfully'
+            })
+        except Exception as e:
+            return Response(
+                {'error': f'Failed to send confirmation email: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

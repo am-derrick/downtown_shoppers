@@ -8,31 +8,6 @@ const api = axios.create({
     withCredentials: false
 });
 
-// Request interceptor for debugging
-api.interceptors.request.use(
-    (config) => {
-        console.log('Request URL:', config.url);
-        console.log('Request Headers:', config.headers);
-        return config;
-    },
-    (error) => {
-        console.error('Request Error:', error);
-        return Promise.reject(error);
-    }
-);
-
-// Response interceptor for debugging
-api.interceptors.response.use(
-    (response) => {
-        console.log('Response:', response);
-        return response;
-    },
-    (error) => {
-        console.error('Response Error:', error);
-        return Promise.reject(error);
-    }
-);
-
 export const shoppingListAPI = {
     createList: async (listData) => {
         try {
@@ -99,6 +74,18 @@ export const shoppingListAPI = {
             return response.data;
         } catch (error) {
             throw error.response?.data || { message: 'Error declining quote' };
+        }
+    },
+
+    sendConfirmationEmail: async (listId) => {
+        try {
+            const response = await api.post(`shopping-lists/${listId}/send_confirmation/`);
+            return response.data;
+        } catch (error) {
+            console.error('Error sending confirmation email:', error);
+            throw error.response?.data || {
+                message: 'Failed to send confirmation email. Please contact support.'
+            }
         }
     }
 };
