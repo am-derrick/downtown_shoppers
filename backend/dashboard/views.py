@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from shopping.models import ShoppingList, Quote, ShoppingItem
 from django.utils import timezone
+from dashboard.utils import get_eat_time
 from django.contrib import messages
 from django.db.models import Count, Q
 from django.core.paginator import Paginator
@@ -30,35 +31,65 @@ def login_view(request):
 @login_required
 def dashboard_home(request):
     """Dashbaord hompage with overview statistics"""
+    current_time = get_eat_time()
+
     context = {
         'new_lists': ShoppingList.objects.filter(status='submitted').count(),
         'processing_lists': ShoppingList.objects.filter(status='processing').count(),
         'quoted_lists': ShoppingList.objects.filter(status='quoted').count(),
-        'recent_lists': ShoppingList.objects.all().order_by('-created_at')[:5],
+        'recent_lists': ShoppingList.objects.all().order_by('created_at')[:5],
         'expiring_quotes': Quote.objects.filter(
             status='pending',
-            expires_at__gt=timezone.now()
+            expires_at__gt=current_time
         ).order_by('expires_at')[:5]
     }
     return render(request, 'dashboard/home.html', context)
 
 @login_required
+def archive_list(request, pk):
+    """view to archive (soft delete) shopping list"""
+    if request.method == 'POST':
+        shopping_list = get_object_or_404(ShoppingList, pk=pk)
+        shopping_list.is_active = False
+        shopping_list.deleted_at = get_eat_time()
+        shopping_list.save()
+        messages.success(request, 'Shopping list archived successfully')
+    return redirect('dashboard:lists')
+
+@login_required
+def unarchive_list(request, pk):
+    """view to restore (unarchive) shopping list"""
+    if request.method == 'POST':
+        shopping_list = get_object_or_404(ShoppingList, pk=pk)
+        shopping_list.unarchive()
+        messages.success(request, 'Shopping list restored successfully')
+    return redirect('dashboard:lists')
+
+@login_required
 def shopping_list_view(request):
     """View showing all shopping lists with filters"""
     status = request.GET.get('status', '')
+    show_archived = request.GET.get('show_archived') == 'on'
+
     lists = ShoppingList.objects.annotate(
         priced_items_count=Count('items', filter=Q(items__price_added=True)),
         total_items_count=Count('items')
     )
 
+    # Filter based on archive status
+    if not show_archived:
+        lists = lists.filter(is_active=True)  # Only show active lists
+    
     if status:
         lists = lists.filter(status=status)
 
-    paginator = Paginator(lists.order_by('-created_at'), 15)
+    if status:
+        lists = lists.filter(status=status)
+
+    paginator = Paginator(lists.order_by('created_at'), 10)
     page = request.GET.get('page')
     lists = paginator.get_page(page)
 
-    # Add page range with ellipsis
     page_range = get_page_range(lists)
 
     status_choices = ShoppingList._meta.get_field('status').choices
@@ -67,7 +98,8 @@ def shopping_list_view(request):
         'lists': lists,
         'current_status': status,
         'status_choices': status_choices,
-        'page_range': page_range
+        'page_range': page_range,
+        'show_archived': show_archived
     }
     return render(request, 'dashboard/lists/list.html', context)
 
@@ -127,7 +159,7 @@ def create_quote(request, list_id):
             delivery_fee=delivery_fee,
             service_fee=service_fee,
             total=total,
-            expires_at=timezone.now() + timezone.timedelta(days=1) # 24 hours
+            expires_at=timezone.now() + timezone.timedelta(hours=8) # 8 hours
         )
 
         shopping_list.status ='quoted'
@@ -143,18 +175,52 @@ def create_quote(request, list_id):
     return render(request, 'dashboard/quotes/create.html', context)
 
 @login_required
+def archive_quote(request, pk):
+    """view to archive (soft delete) quote"""
+    if request.method == 'POST':
+        quote = get_object_or_404(Quote, pk=pk)
+        quote.is_active = False
+        quote.deleted_at = get_eat_time()
+        quote.save()
+        messages.success(request, 'Quote archived successfully')
+    return redirect('dashboard:quotes')
+
+@login_required
+def unarchive_quote(request, pk):
+    """view to restore (unarchive) quote"""
+    if request.method == 'POST':
+        quote = get_object_or_404(Quote, pk=pk)
+        quote.unarchive()
+        messages.success(request, 'Quote restored successfully')
+    return redirect('dashboard:quotes')
+
+@login_required
 def quote_list(request):
     """View all quotes with filters"""
     status = request.GET.get('status', '')
-    quotes = Quote.objects.all()
+    show_archived = request.GET.get('show_archived') == 'on'
+
+    if show_archived:
+        quotes = Quote.objects.all()
+    else:
+        quotes = Quote.active_quotes.active()
 
     if status:
         quotes = quotes.filter(status=status)
 
+    paginator = Paginator(quotes.order_by('created_at'), 10)
+    page = request.GET.get('page')
+    quotes = paginator.get_page(page)
+
+    current_time = get_eat_time()
+    page_range = get_page_range(quotes)
+
     context = {
-        'quotes': quotes.order_by('-created_at'),
+        'quotes': quotes,
         'current_status': status,
         'status_choices': Quote._meta.get_field('status').choices,
-        'now': timezone.now()
+        'now': current_time,
+        'page_range': page_range,
+        'show_archived': show_archived
     }
     return render(request, 'dashboard/quotes/list.html', context)
