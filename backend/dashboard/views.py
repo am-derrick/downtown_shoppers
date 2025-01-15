@@ -54,7 +54,7 @@ def shopping_list_view(request):
     if status:
         lists = lists.filter(status=status)
 
-    paginator = Paginator(lists.order_by('created_at'), 15)
+    paginator = Paginator(lists.order_by('created_at'), 10)
     page = request.GET.get('page')
     lists = paginator.get_page(page)
 
@@ -151,10 +151,19 @@ def quote_list(request):
     if status:
         quotes = quotes.filter(status=status)
 
+    paginator = Paginator(quotes.order_by('created_at'), 10)
+    page = request.GET.get('page')
+    quotes = paginator.get_page(page)
+
+    # Add page range with ellipsis
+    page_range = get_page_range(quotes)
+
+
     context = {
-        'quotes': quotes.order_by('created_at'),
+        'quotes': quotes,
         'current_status': status,
         'status_choices': Quote._meta.get_field('status').choices,
-        'now': timezone.now()
+        'now': timezone.now(),
+        'page_range': page_range
     }
     return render(request, 'dashboard/quotes/list.html', context)
