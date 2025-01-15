@@ -6,7 +6,7 @@ from dashboard.utils import get_eat_time
 from django.contrib import messages
 from django.db.models import Count, Q
 from django.core.paginator import Paginator
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from dashboard.utils import get_page_range
 
 
@@ -27,6 +27,12 @@ def login_view(request):
         return redirect('dashboard:home')
     
     return render(request, 'dashboard/login.html')
+
+def logout_view(request):
+    """Logs out user and redirects to login page"""
+    logout(request)
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('dashboard:login')
 
 @login_required
 def dashboard_home(request):
