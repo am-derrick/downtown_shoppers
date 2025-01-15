@@ -182,7 +182,6 @@ CSRF_TRUSTED_ORIGINS = [
 # Email settings
 if DEBUG:  # Development settings
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    print("Using console email backend for development")
 else:  # Production settings
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmail.com'
