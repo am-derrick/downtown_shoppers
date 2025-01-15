@@ -34,7 +34,7 @@ def dashboard_home(request):
         'new_lists': ShoppingList.objects.filter(status='submitted').count(),
         'processing_lists': ShoppingList.objects.filter(status='processing').count(),
         'quoted_lists': ShoppingList.objects.filter(status='quoted').count(),
-        'recent_lists': ShoppingList.objects.all().order_by('-created_at')[:5],
+        'recent_lists': ShoppingList.objects.all().order_by('created_at')[:5],
         'expiring_quotes': Quote.objects.filter(
             status='pending',
             expires_at__gt=timezone.now()
@@ -54,7 +54,7 @@ def shopping_list_view(request):
     if status:
         lists = lists.filter(status=status)
 
-    paginator = Paginator(lists.order_by('-created_at'), 15)
+    paginator = Paginator(lists.order_by('created_at'), 15)
     page = request.GET.get('page')
     lists = paginator.get_page(page)
 
@@ -127,7 +127,7 @@ def create_quote(request, list_id):
             delivery_fee=delivery_fee,
             service_fee=service_fee,
             total=total,
-            expires_at=timezone.now() + timezone.timedelta(days=1) # 24 hours
+            expires_at=timezone.now() + timezone.timedelta(hours=8) # 8 hours
         )
 
         shopping_list.status ='quoted'
@@ -152,7 +152,7 @@ def quote_list(request):
         quotes = quotes.filter(status=status)
 
     context = {
-        'quotes': quotes.order_by('-created_at'),
+        'quotes': quotes.order_by('created_at'),
         'current_status': status,
         'status_choices': Quote._meta.get_field('status').choices,
         'now': timezone.now()
