@@ -2,6 +2,119 @@
 {% load humanize %}
 
 {% block title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    .stat-card .value {
+        font-size: 2.5rem;
+        font-weight: 600;
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(45deg, #2D3748, #4A5568);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card .label {
+        color: #718096;
+        font-size: 0.875rem;
+    }
+
+    /* Cards */
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        transition: box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    .card-header {
+        background: white;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 1.25rem;
+    }
+
+    .card-title {
+        color: #2D3748;
+        font-weight: 600;
+    }
+
+    /* List Groups */
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 1rem 1.25rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
+
+    .list-group-item-action:hover {
+        background-color: #F7FAFC;
+    }
+
+    .list-group-item h6 {
+        color: #2D3748;
+        font-weight: 600;
+    }
+
+    /* Badges */
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 500;
+        text-transform: capitalize;
+    }
+
+    .bg-new { background-color: #3182CE; }
+    .bg-processing { background-color: #D69E2E; }
+    .bg-quoted { background-color: #38A169; }
+    .bg-delivered { background-color: #718096; }
+    .bg-cancelled { background-color: #E53E3E; }
+
+    /* Icons */
+    .bi {
+        line-height: 1;
+    }
+    
+    .text-primary { color: #3182CE !important; }
+    .text-warning { color: #D69E2E !important; }
+    .text-success { color: #38A169 !important; }
+    .text-danger { color: #E53E3E !important; }
+
+    /* Empty States */
+    .text-muted {
+        color: #718096 !important;
+    }
+</style>
+{% endblock %}
+
 {% block page_title %}Overview{% endblock %}
 
 {% block content %}
@@ -9,35 +122,33 @@
 <div class="stats-grid">
     <div class="stat-card">
         <div class="d-flex align-items-center mb-3">
-            <i class="bi bi-cart-plus text-primary h4 mb-0 me-2"></i>
-            <span class="text-muted">New Lists</span>
+            <i class="bi bi-cart-plus text-primary h3 mb-0 me-2"></i>
+            <span class="text-muted fw-medium">New Lists</span>
         </div>
         <div class="value">{{ new_lists }}</div>
         <div class="label">Awaiting Processing</div>
     </div>
-
     <div class="stat-card">
         <div class="d-flex align-items-center mb-3">
-            <i class="bi bi-clock-history text-warning h4 mb-0 me-2"></i>
-            <span class="text-muted">Processing</span>
+            <i class="bi bi-clock-history text-warning h3 mb-0 me-2"></i>
+            <span class="text-muted fw-medium">Processing</span>
         </div>
         <div class="value">{{ processing_lists }}</div>
         <div class="label">Lists Being Priced</div>
     </div>
-
     <div class="stat-card">
         <div class="d-flex align-items-center mb-3">
-            <i class="bi bi-receipt text-success h4 mb-0 me-2"></i>
-            <span class="text-muted">Quoted</span>
+            <i class="bi bi-receipt text-success h3 mb-0 me-2"></i>
+            <span class="text-muted fw-medium">Quoted</span>
         </div>
         <div class="value">{{ quoted_lists }}</div>
         <div class="label">Awaiting Response</div>
     </div>
 </div>
 
-<div class="row">
+<div class="row g-4">
     <!-- Recent Lists -->
-    <div class="col-md-6 mb-4">
+    <div class="col-md-6">
         <div class="card h-100">
             <div class="card-header">
                 <h5 class="card-title mb-0">Recent Lists</h5>
@@ -50,12 +161,12 @@
                             <h6 class="mb-1">{{ list.customer_email }}</h6>
                             <span class="badge bg-{{ list.status }}">{{ list.get_status_display }}</span>
                         </div>
-                        <p class="mb-1">{{ list.items.count }} items</p>
+                        <p class="mb-1 text-muted">{{ list.items.count }} items</p>
                         <small class="text-muted">{{ list.created_at|timesince }} ago</small>
                     </a>
                     {% empty %}
-                    <div class="list-group-item text-center text-muted py-4">
-                        <i class="bi bi-inbox h4 d-block"></i>
+                    <div class="list-group-item text-center text-muted py-5">
+                        <i class="bi bi-inbox h3 d-block mb-2"></i>
                         No recent lists
                     </div>
                     {% endfor %}
@@ -65,7 +176,7 @@
     </div>
 
     <!-- Expiring Quotes -->
-    <div class="col-md-6 mb-4">
+    <div class="col-md-6">
         <div class="card h-100">
             <div class="card-header">
                 <h5 class="card-title mb-0">Expiring Quotes</h5>
@@ -76,14 +187,14 @@
                     <a href="{% url 'dashboard:list_detail' quote.shopping_list.pk %}" class="list-group-item list-group-item-action">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1">Quote #{{ quote.id|truncatechars:8 }}</h6>
-                            <small class="text-danger">Expires in {{ quote.expires_at|timeuntil }}</small>
+                            <small class="text-danger fw-medium">Expires in {{ quote.expires_at|timeuntil }}</small>
                         </div>
-                        <p class="mb-1">Total: UGX {{ quote.total|intcomma }}</p>
+                        <p class="mb-1 fw-medium">UGX {{ quote.total|intcomma }}</p>
                         <small class="text-muted">{{ quote.shopping_list.customer_email }}</small>
                     </a>
                     {% empty %}
-                    <div class="list-group-item text-center text-muted py-4">
-                        <i class="bi bi-clock h4 d-block"></i>
+                    <div class="list-group-item text-center text-muted py-5">
+                        <i class="bi bi-clock h3 d-block mb-2"></i>
                         No quotes expiring soon
                     </div>
                     {% endfor %}

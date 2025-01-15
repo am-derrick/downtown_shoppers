@@ -1,0 +1,104 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+
+{% block title %}Edit Quote{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Edit Quote for List #{{ shopping_list.id }}</h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <!-- Items Summary -->
+            <div class="mb-4">
+                <h6>Items Summary</h6>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price (UGX)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in shopping_list.items.all %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>
+                                {% if item.price_added %}
+                                UGX {{ item.actual_price|intcomma }}
+                                {% else %}
+                                Not priced
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" class="price-form d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="mark_priced">
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <div class="input-group">
+                                        <input type="number" name="price" class="form-control form-control-sm" value="{{ item.actual_price|default:'' }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Update Price</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="table-light">
+                            <td colspan="2"><strong>Subtotal</strong></td>
+                            <td colspan="2"><strong>UGX {{ items_total|intcomma }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Quote Details -->
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Delivery Fee (UGX)</label>
+                        <input type="number" name="delivery_fee" class="form-control" value="{{ quote.delivery_fee }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Service Fee (UGX)</label>
+                        <input type="number" name="service_fee" class="form-control" value="{{ quote.service_fee }}" required>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Update Quote</button>
+                    <a href="{% url 'dashboard:list_detail' shopping_list.pk %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const subtotal = {{ items_total }};
+    const form = document.querySelector('form');
+    const deliveryFeeInput = form.querySelector('input[name="delivery_fee"]');
+    const serviceFeeInput = form.querySelector('input[name="service_fee"]');
+    
+    function updateTotal() {
+        const deliveryFee = parseFloat(deliveryFeeInput.value) || 0;
+        const serviceFee = parseFloat(serviceFeeInput.value) || 0;
+        const total = subtotal + deliveryFee + serviceFee;
+        const formattedTotal = new Intl.NumberFormat('en-US').format(total);
+        document.getElementById('total').textContent = `UGX ${formattedTotal}`;
+    }
+    
+    deliveryFeeInput.addEventListener('input', updateTotal);
+    serviceFeeInput.addEventListener('input', updateTotal);
+    
+    // Initialize total on page load
+    updateTotal();
+});
+</script>
+{% endblock %}
+{% endblock %}
