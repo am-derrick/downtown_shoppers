@@ -47,13 +47,22 @@ def dashboard_home(request):
 
 @login_required
 def archive_list(request, pk):
-    """view to archive shopping list"""
+    """view to archive (soft delete) shopping list"""
     if request.method == 'POST':
         shopping_list = get_object_or_404(ShoppingList, pk=pk)
-        shopping_list.archived = True
-        shopping_list.archived_at = get_eat_time()
+        shopping_list.is_active = False
+        shopping_list.deleted_at = get_eat_time()
         shopping_list.save()
         messages.success(request, 'Shopping list archived successfully')
+    return redirect('dashboard:lists')
+
+@login_required
+def unarchive_list(request, pk):
+    """view to restore (unarchive) shopping list"""
+    if request.method == 'POST':
+        shopping_list = get_object_or_404(ShoppingList, pk=pk)
+        shopping_list.unarchive()
+        messages.success(request, 'Shopping list restored successfully')
     return redirect('dashboard:lists')
 
 @login_required
@@ -67,8 +76,12 @@ def shopping_list_view(request):
         total_items_count=Count('items')
     )
 
+    # Filter based on archive status
     if not show_archived:
-        lists = lists.filter(archived=False)
+        lists = lists.filter(is_active=True)  # Only show active lists
+    
+    if status:
+        lists = lists.filter(status=status)
 
     if status:
         lists = lists.filter(status=status)
@@ -77,7 +90,6 @@ def shopping_list_view(request):
     page = request.GET.get('page')
     lists = paginator.get_page(page)
 
-    # Add page range with ellipsis
     page_range = get_page_range(lists)
 
     status_choices = ShoppingList._meta.get_field('status').choices
@@ -163,10 +175,35 @@ def create_quote(request, list_id):
     return render(request, 'dashboard/quotes/create.html', context)
 
 @login_required
+def archive_quote(request, pk):
+    """view to archive (soft delete) quote"""
+    if request.method == 'POST':
+        quote = get_object_or_404(Quote, pk=pk)
+        quote.is_active = False
+        quote.deleted_at = get_eat_time()
+        quote.save()
+        messages.success(request, 'Quote archived successfully')
+    return redirect('dashboard:quotes')
+
+@login_required
+def unarchive_quote(request, pk):
+    """view to restore (unarchive) quote"""
+    if request.method == 'POST':
+        quote = get_object_or_404(Quote, pk=pk)
+        quote.unarchive()
+        messages.success(request, 'Quote restored successfully')
+    return redirect('dashboard:quotes')
+
+@login_required
 def quote_list(request):
     """View all quotes with filters"""
     status = request.GET.get('status', '')
-    quotes = Quote.objects.all()
+    show_archived = request.GET.get('show_archived') == 'on'
+
+    if show_archived:
+        quotes = Quote.objects.all()
+    else:
+        quotes = Quote.active_quotes.active()
 
     if status:
         quotes = quotes.filter(status=status)
@@ -175,10 +212,7 @@ def quote_list(request):
     page = request.GET.get('page')
     quotes = paginator.get_page(page)
 
-    # Get time in EAT
     current_time = get_eat_time()
-
-    # Add page range with ellipsis
     page_range = get_page_range(quotes)
 
     context = {
@@ -186,6 +220,7 @@ def quote_list(request):
         'current_status': status,
         'status_choices': Quote._meta.get_field('status').choices,
         'now': current_time,
-        'page_range': page_range
+        'page_range': page_range,
+        'show_archived': show_archived
     }
     return render(request, 'dashboard/quotes/list.html', context)
