@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Info, Image as ImageIcon, ListChecks, Clock } from 'lucide-react';
 
@@ -67,11 +68,25 @@ const Instructions = () => {
                     Need Help?
                 </h4>
                 <p className="text-sm text-gray-600 mb-4">
-                    Our support team is available to assist you with your shopping list
+                    Our support team is available to assist you with your shopping list. Contact us via:
                 </p>
-                <button className="text-sm text-yellow-500 hover:text-yellow-600 font-medium">
-                    Contact Support
-                </button>
+                <ol>
+                    <li>
+                    <Link to='https://wa.me/256766531370'>
+                        <button className="text-sm text-yellow-500 hover:text-yellow-600 font-medium">
+                            ☙ WhatsApp
+                        </button>
+                    </Link>
+                    </li>
+                    <li>
+                    <Link to='mailto:downtownshopping3@gmail.com'>
+                        <button className="text-sm text-yellow-500 hover:text-yellow-600 font-medium">
+                            ☙ Email
+                        </button>
+                    </Link>
+                    </li>
+                </ol>
+                
             </div>
         </motion.div>
     );

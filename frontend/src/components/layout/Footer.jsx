@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import Logo from '../common/Logo';
 
 const Footer = () => {
@@ -19,7 +20,7 @@ const Footer = () => {
             { 
                 icon: Phone, 
                 info: '+256 766531370',
-                link: 'tel:+256758859166'
+                link: 'tel:+256766531370'
             },
             { 
                 icon: Mail, 
@@ -47,9 +48,9 @@ const Footer = () => {
                 color: 'hover:bg-gray-50 hover:text-gray-900'
             },
             { 
-                icon: Linkedin, 
-                name: 'LinkedIn',
-                link: 'https://linkedin.com/company/downtown-shoppers',
+                icon: FaWhatsapp, 
+                name: 'WhatsApp',
+                link: 'https://wa.me/256766531370',
                 color: 'hover:bg-blue-50 hover:text-blue-700'
             }
         ]
