@@ -86,6 +86,11 @@
                 </a>
             </div>
         {% endif %}
+        {% if shopping_list.status == 'quoted' and shopping_list.quote %}
+            <a href="{% url 'dashboard:edit_quote' quote_id=shopping_list.quote.id %}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> Edit Quote
+            </a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

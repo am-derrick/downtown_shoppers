@@ -13,6 +13,7 @@ urlpatterns = [
     path('lists/<uuid:pk>/unarchive/', views.unarchive_list, name='unarchive_list'),
     path('quotes/', views.quote_list, name='quotes'),
     path('quotes/create/<uuid:list_id>/', views.create_quote, name='create_quote'),
+    path('quotes/<int:quote_id>/edit/', views.edit_quote, name='edit_quote'),
     path('quotes/<int:pk>/archive/', views.archive_quote, name='archive_quote'),
     path('quotes/<int:pk>/unarchive/', views.unarchive_quote, name='unarchive_quote'),
 ]
