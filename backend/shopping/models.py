@@ -3,7 +3,7 @@ from django.db.models import Q
 import uuid
 from django.core.validators import EmailValidator
 from .validators import validate_ug_phone
-from .managers import ShoppingListmanager, Quotemanager
+from .managers import ShoppingListManager, QuoteManager
 from django.utils import timezone
 
 class ShoppingList(models.Model):
@@ -14,7 +14,7 @@ class ShoppingList(models.Model):
         default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
         max_length=20,
@@ -49,13 +49,19 @@ class ShoppingList(models.Model):
             models.Index(fields=['customer_email']),
         ]
 
-    objects = models.Manager                # Default manager
-    active_lists = ShoppingListmanager()    # Custom manager
+    objects = models.Manager()              # Default manager
+    active_lists = ShoppingListManager()    # Custom manager
 
     def soft_delete(self):
         """Soft delete the shopping list"""
         self.is_active = False
         self.deleted_at = timezone.now()
+        self.save()
+
+    def unarchive(self):
+        """Restore a soft-deleted shopping list"""
+        self.is_active = True
+        self.deleted_at = None
         self.save()
 
 
@@ -148,11 +154,16 @@ class Quote(models.Model):
         return f"Quote for List {self.shoppping_list.id}"
     
     objects = models.Manager()
-    active_quotes = Quotemanager()
+    active_quotes = QuoteManager()
 
     def soft_delete(self):
         """Soft delete the quote"""
         self.is_active = False
         self.deleted_at = timezone.now()
         self.save()
-        
+
+    def unarchive(self):
+        """Restore a soft-deleted quote"""
+        self.is_active = True
+        self.deleted_at = None
+        self.save()
