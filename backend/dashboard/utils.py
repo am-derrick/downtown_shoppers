@@ -1,4 +1,5 @@
-from django.core.paginator import Paginator
+from django.utils import timezone
+import pytz
 
 def get_page_range(page_obj, show_adjacent=2):
     """Helper function to generate page range with ellipsis"""
@@ -29,3 +30,7 @@ def get_page_range(page_obj, show_adjacent=2):
         page_range.append(total_pages)
 
     return page_range
+
+def get_eat_time():
+    eat_tz = pytz.timezone('Africa/Kampala')
+    return timezone.now().astimezone(eat_tz)

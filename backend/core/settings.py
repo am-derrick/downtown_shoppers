@@ -193,3 +193,6 @@ else:  # Production settings
 
 DEFAULT_FROM_EMAIL = 'Downtown Shoppers <downtownshopping3@gmail.com>'
 
+# Timezone settings
+TIME_ZONE = 'Africa/Kampala'
+USE_TZ = True
