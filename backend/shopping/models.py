@@ -3,6 +3,8 @@ from django.db.models import Q
 import uuid
 from django.core.validators import EmailValidator
 from .validators import validate_ug_phone
+from .managers import ShoppingListmanager, Quotemanager
+from django.utils import timezone
 
 class ShoppingList(models.Model):
     """Class for the shopping list with list of
@@ -12,16 +14,16 @@ class ShoppingList(models.Model):
         default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    archived = models.BooleanField(default=False)
-    archived_at = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
         max_length=20,
         choices=[
             ('submitted', 'List Submitted'),    # User submits list
             ('processing', 'Admin Processing'), # Admin is working on pricing
-            ('quoted', 'Quote Ready'),         # Prices added, quote sent to customer
-            ('accepted', 'Quote Accepted'),    # Customer accepted the quote
-            ('declined', 'Quote Declined'),    # Customer declined the quote
+            ('quoted', 'Quote Ready'),          # Prices added, quote sent to customer
+            ('accepted', 'Quote Accepted'),     # Customer accepted the quote
+            ('declined', 'Quote Declined'),     # Customer declined the quote
             ('completed', 'Order Completed')
         ],
         default='submitted'
@@ -38,7 +40,7 @@ class ShoppingList(models.Model):
 
     def __str__(self):
         return f"List {self.id} - {self.status}"
-
+    
     class Meta:
         ordering = ['-created_at']
         indexes = [
@@ -46,6 +48,16 @@ class ShoppingList(models.Model):
             models.Index(fields=['status']),
             models.Index(fields=['customer_email']),
         ]
+
+    objects = models.Manager                # Default manager
+    active_lists = ShoppingListmanager()    # Custom manager
+
+    def soft_delete(self):
+        """Soft delete the shopping list"""
+        self.is_active = False
+        self.deleted_at = timezone.now()
+        self.save()
+
 
 class ShoppingItem(models.Model):
     """class for a shopping item"""
@@ -115,6 +127,8 @@ class Quote(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     subtotal = models.DecimalField(max_digits=10, decimal_places=0)
     delivery_fee = models.DecimalField(max_digits=10, decimal_places=0)
     service_fee = models.DecimalField(max_digits=10, decimal_places=0)
@@ -132,3 +146,13 @@ class Quote(models.Model):
 
     def __str__(self):
         return f"Quote for List {self.shoppping_list.id}"
+    
+    objects = models.Manager()
+    active_quotes = Quotemanager()
+
+    def soft_delete(self):
+        """Soft delete the quote"""
+        self.is_active = False
+        self.deleted_at = timezone.now()
+        self.save()
+        
