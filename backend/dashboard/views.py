@@ -46,13 +46,29 @@ def dashboard_home(request):
     return render(request, 'dashboard/home.html', context)
 
 @login_required
+def archive_list(request, pk):
+    """view to archive shopping list"""
+    if request.method == 'POST':
+        shopping_list = get_object_or_404(ShoppingList, pk=pk)
+        shopping_list.archived = True
+        shopping_list.archived_at = get_eat_time()
+        shopping_list.save()
+        messages.success(request, 'Shopping list archived successfully')
+    return redirect('dashboard:lists')
+
+@login_required
 def shopping_list_view(request):
     """View showing all shopping lists with filters"""
     status = request.GET.get('status', '')
+    show_archived = request.GET.get('show_archived') == 'on'
+
     lists = ShoppingList.objects.annotate(
         priced_items_count=Count('items', filter=Q(items__price_added=True)),
         total_items_count=Count('items')
     )
+
+    if not show_archived:
+        lists = lists.filter(archived=False)
 
     if status:
         lists = lists.filter(status=status)
@@ -70,7 +86,8 @@ def shopping_list_view(request):
         'lists': lists,
         'current_status': status,
         'status_choices': status_choices,
-        'page_range': page_range
+        'page_range': page_range,
+        'show_archived': show_archived
     }
     return render(request, 'dashboard/lists/list.html', context)
 
