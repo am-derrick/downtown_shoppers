@@ -32,7 +32,7 @@ from django.conf import settings
 @method_decorator(csrf_exempt, name='dispatch')
 class ShoppingListViewSet(viewsets.ModelViewSet):
     """shopping list view"""
-    queryset = ShoppingList.objects.all()
+    queryset = ShoppingList.active_lists.active()
     serializer_class = ShoppingListSerializer
 
     def create(self, request, *args, **kwargs):
