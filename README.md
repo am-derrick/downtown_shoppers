@@ -1,7 +1,7 @@
 # Downtown Shoppers
 
 [![Python Version](https://img.shields.io/badge/python-3.11.7-brightgreen.svg)](https://python.org)
-[![Django Version](https://img.shields.io/badge/django-5.1.4-darktgreen.svg)](https://www.djangoproject.com/download/)
+[![Django Version](https://img.shields.io/badge/django-5.1.4-darkgreen.svg)](https://www.djangoproject.com/download/)
 [![Bootstrap Version](https://img.shields.io/badge/bootstrap-5.3-purple.svg)](https://getbootstrap.com/docs/5.3/)
 [![React Version](https://img.shields.io/badge/react-18.2.0-blue.svg)](https://react.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
