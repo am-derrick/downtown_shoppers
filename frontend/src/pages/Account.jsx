@@ -1,4 +1,3 @@
-// src/pages/Account.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
 import { User, ShoppingBag, MapPin, Bell } from 'lucide-react';

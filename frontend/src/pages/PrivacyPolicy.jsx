@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import Footer from '@/components/layout/Footer';
 
 const PrivacyPolicy = () => {
   const tableOfContents = [
@@ -292,7 +291,6 @@ Personal data is, in simpler terms, any information about you that enables you t
           </div>
         </motion.div>
       </div>
-      <Footer />
     </div>
   );
 };

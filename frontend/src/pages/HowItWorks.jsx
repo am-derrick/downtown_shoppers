@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import Footer from '../components/layout/Footer';
 import { Check, ShoppingBag, CreditCard } from 'lucide-react';
 
 const HowItWorks = () => {
@@ -62,7 +61,6 @@ const HowItWorks = () => {
           ))}
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import TermsSection from './TermsSection';
-import Footer from '@/components/layout/Footer';
 
 const TermsAndConditions = () => {
   // Table of Contents data
@@ -756,7 +755,6 @@ const TermsAndConditions = () => {
           </div>
         </motion.div>
       </div>
-      <Footer />
     </div>
   );
 };

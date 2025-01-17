@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import Footer from '../components/layout/Footer';
 import { ShoppingBag, Package, Clock, Check } from 'lucide-react';
 
 const About = () => {
@@ -93,7 +92,6 @@ const About = () => {
           </motion.div>
         </div>
       </div>
-      <Footer />
     </div>
     
   );

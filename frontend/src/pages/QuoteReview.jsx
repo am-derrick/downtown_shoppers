@@ -145,7 +145,11 @@ const QuoteReview = () => {
     }
 
     if (loading) {
-        return <QuoteLoading />;
+        return (
+            <div>
+                <QuoteLoading />
+            </div>
+        );
     }
 
     return (
