@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 import Logo from '../common/Logo';
 
 const Footer = () => {
@@ -38,13 +39,13 @@ const Footer = () => {
             { 
                 icon: Instagram, 
                 name: 'Instagram',
-                link: 'https://instagram.com/downtown.shoppers',
+                link: 'https://www.instagram.com/downtown.shoppers',
                 color: 'hover:bg-pink-50 hover:text-pink-600'
             },
             { 
-                icon: Twitter, 
+                icon: FaXTwitter, 
                 name: 'X',
-                link: 'https://x.com/downtownshop',
+                link: 'https://x.com/Down_town256',
                 color: 'hover:bg-gray-50 hover:text-gray-900'
             },
             { 
