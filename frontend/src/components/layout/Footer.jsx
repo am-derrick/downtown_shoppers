@@ -140,10 +140,10 @@ const Footer = () => {
                             © {new Date().getFullYear()} Downtown Shoppers. All rights reserved.
                         </p>
                         <div className="flex space-x-6">
-                            <Link to="/privacy" className="text-sm text-gray-500 hover:text-gray-900">
+                            <Link to="/privacy-policy" className="text-sm text-gray-500 hover:text-gray-900">
                                 Privacy Policy
                             </Link>
-                            <Link to="/terms" className="text-sm text-gray-500 hover:text-gray-900">
+                            <Link to="/terms-and-conditions" className="text-sm text-gray-500 hover:text-gray-900">
                                 Terms of Service
                             </Link>
                         </div>
