@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import shopperMan from '../../assets/images/shopping_man_1.png';
-import deliveryMan from '../../assets/images/delivery_man.png';
-import liftLady from '../../assets/images/lift_lady.png'
+import deliveryVan from '../../assets/images/DTS_Van.png';
+import liftLady from '../../assets/images/lift_lady.png';
 
 const Hero = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -18,7 +18,7 @@ const Hero = () => {
             description: "Submit your shopping list, and let our expert shoppers handle the rest."
         },
         {
-            image: deliveryMan,
+            image: deliveryVan,
             titleParts: {
                 start: "Fast &",
                 highlighted: "Reliable Delivery",
