@@ -11,6 +11,8 @@ import About from './pages/About';
 import Payment from './pages/Payment';
 import PaymentSummary from './pages/PaymentSummary';
 import OrderSuccess from './pages/OrderSuccess';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsAndConditions from './pages/TermsAndConditions';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/about" element={<About />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/shopping" element={<Shopping />} />
           <Route path="/quote/:listId" element={<QuoteReview />} />
           <Route path="/order/confirm/:listId" element={<OrderConfirmation />} />
