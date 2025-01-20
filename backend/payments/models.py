@@ -22,3 +22,6 @@ class Payment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Payment {self.order_tracking_id} - {self.status}"
