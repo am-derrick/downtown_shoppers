@@ -195,3 +195,13 @@ DEFAULT_FROM_EMAIL = 'Downtown Shoppers <downtownshopping3@gmail.com>'
 # Timezone settings
 TIME_ZONE = 'Africa/Kampala'
 USE_TZ = True
+
+# PesaPal settings
+if DEBUG:
+    FRONTEND_URL = 'http://localhost:5173'
+    BACKEND_URL = 'http://localhost:8000'
+else:
+    FRONTEND_URL = 'https://www.downtown-shopping.org'
+    BACKEND_URL = 'https://api.downtown-shopping.org'
+PESAPAL_CONSUMER_KEY = os.environ.get('PESAPAL_CONSUMER_KEY')
+PESAPAL_CONSUMER_SECRET = os.environ.get('PESAPAL_CONSUMER_SECRET')
