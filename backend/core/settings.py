@@ -202,6 +202,6 @@ if DEBUG:
     BACKEND_URL = 'http://localhost:8000'
 else:
     FRONTEND_URL = 'https://www.downtown-shopping.org'
-    BACKEND_URL = 'https://api.downtown-shopping.org'
+    BACKEND_URL = 'https://app.downtown-shopping.org/api'
 PESAPAL_CONSUMER_KEY = os.environ.get('PESAPAL_CONSUMER_KEY')
 PESAPAL_CONSUMER_SECRET = os.environ.get('PESAPAL_CONSUMER_SECRET')
