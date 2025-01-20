@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'django.contrib.humanize',
     'dashboard',
+    'payments',
 ]
 
 MIDDLEWARE = [
