@@ -22,13 +22,8 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 # Allowed hosts
-#ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,3177-41-90-172-173.ngrok-free.app").split(",")
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    '3177-41-90-172-173.ngrok-free.app',
-    '.ngrok-free.app',  # Allow all ngrok subdomains
-]
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,3177-41-90-172-173.ngrok-free.app").split(",")
+#ALLOWED_HOSTS = [ '127.0.0.1', 'localhost', '3177-41-90-172-173.ngrok-free.app', '.ngrok-free.app' ]
 
 # Application definition
 INSTALLED_APPS = [
