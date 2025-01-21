@@ -13,6 +13,8 @@ import PaymentSummary from './pages/PaymentSummary';
 import OrderSuccess from './pages/OrderSuccess';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
+import PaymentCallback from './pages/PaymentCallback';
+import OrderFailed from './pages/OrderFailed';
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
           <Route path="/order/payment/:listId" element={<Payment />} />
           <Route path="/order/payment-summary/:listId" element={<PaymentSummary />} />
           <Route path="order/success/:listId" element={<OrderSuccess />} />
+          <Route path="order/failed/:listId" element={<OrderFailed />} />
+          <Route path="/payment/callback" element={<PaymentCallback />} />
           <Route path="/account" element={<Account />} />
         </Routes>
       </Layout>

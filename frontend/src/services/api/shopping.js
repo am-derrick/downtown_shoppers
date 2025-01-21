@@ -1,12 +1,4 @@
-import axios from 'axios';
-
-const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
-    headers: {
-        'Content-Type': 'multipart/form-data',
-    },
-    withCredentials: false
-});
+import { api } from './config';
 
 export const shoppingListAPI = {
     createList: async (listData) => {
@@ -22,7 +14,6 @@ export const shoppingListAPI = {
 
             // Handling items as JSON string for the main data to match DRF serializers
             listData.items.forEach((item, index) => {
-                // For each item, we need to structure the data differently
                 formData.append(`items[${index}]name`, item.name);
                 formData.append(`items[${index}]quantity`, item.quantity);
                 
@@ -38,9 +29,12 @@ export const shoppingListAPI = {
                 }
             });
 
-            const response = await api.post('/shopping-lists/', formData);
+            const response = await api.post('/shopping-lists/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
             return response.data;
-            
         } catch (error) {
             console.error('Detailed Error:', error.response?.data || error.message);
             throw error.response?.data || error;
@@ -49,12 +43,10 @@ export const shoppingListAPI = {
 
     checkStatus: async (listId) => {
         try {
-            console.log('Making API call to:', `${api.defaults.baseURL}/shopping-lists/${listId}/status/`);
             const response = await api.get(`/shopping-lists/${listId}/status/`);
             return response.data;
         } catch (error) {
             console.error('API Error:', error);
-            console.error('Error Response:', error.response);
             throw error.response?.data || { message: 'Error checking status' };
         }
     },
@@ -85,7 +77,7 @@ export const shoppingListAPI = {
             console.error('Error sending confirmation email:', error);
             throw error.response?.data || {
                 message: 'Failed to send confirmation email. Please contact support.'
-            }
+            };
         }
     }
 };
