@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Truck, Phone, CreditCard } from 'lucide-react';
+import { Truck, Phone, CreditCard, Loader } from 'lucide-react';
+import { paymentAPI } from '@/services/api';
 
 function Payment() {
   const { listId } = useParams();
@@ -9,6 +10,8 @@ function Payment() {
   const navigate = useNavigate();
   const orderData = location.state?.orderData;
   const [selectedMethod, setSelectedMethod] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState(null);
 
   if (!orderData) {
     return (
@@ -32,31 +35,32 @@ function Payment() {
       name: 'Cash on Delivery',
       iconType: 'truck',
       description: 'Pay when your order arrives',
-      available: true
+      available: true,
+      provider: 'cod'
     },
     {
       id: 'mtn',
       name: 'MTN Mobile Money',
       iconType: 'phone',
       description: 'Pay using MTN Mobile Money',
-      available: false,
-      comingSoon: true
+      available: true,
+      provider: 'pesapal'
     },
     {
       id: 'airtel',
       name: 'Airtel Money',
       iconType: 'phone',
       description: 'Pay using Airtel Money',
-      available: false,
-      comingSoon: true
+      available: true,
+      provider: 'pesapal'
     },
     {
       id: 'card',
       name: 'Credit/Debit Card',
       iconType: 'card',
       description: 'Pay securely with your card',
-      available: false,
-      comingSoon: true
+      available: true,
+      provider: 'pesapal'
     }
   ];
 
@@ -77,46 +81,77 @@ function Payment() {
     const method = paymentMethods.find(m => m.id === methodId);
     if (method && method.available) {
       setSelectedMethod(methodId);
+      setError(null);
     }
   };
 
-  const handleContinue = () => {
-    if (!selectedMethod) return;
+  const handleContinue = async () => {
+    if (!selectedMethod || isProcessing) return;
+    
+    setIsProcessing(true);
+    setError(null);
 
     const selectedPaymentDetails = paymentMethods.find(m => m.id === selectedMethod);
-    
-    const paymentDetailsClean = {
-      id: selectedPaymentDetails.id,
-      name: selectedPaymentDetails.name,
-      description: selectedPaymentDetails.description,
-      available: selectedPaymentDetails.available,
-      iconType: selectedPaymentDetails.iconType
-    };
 
-    const orderDataClean = {
-      total: orderData.total,
-      subtotal: orderData.subtotal,
-      delivery_fee: orderData.delivery_fee,
-      service_fee: orderData.service_fee,
-      items: orderData.items.map(item => ({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price
-      })),
-      customer: {
-        email: orderData.customer.email,
-        phone: orderData.customer.phone,
-        address: orderData.customer.address
-      }
-    };
+    try {
+      if (selectedPaymentDetails.provider === 'cod') {
+        // Handle cash on delivery flow
+        const paymentDetailsClean = {
+          id: selectedPaymentDetails.id,
+          name: selectedPaymentDetails.name,
+          description: selectedPaymentDetails.description,
+          available: selectedPaymentDetails.available,
+          iconType: selectedPaymentDetails.iconType
+        };
 
-    navigate(`/order/payment-summary/${listId}`, {
-      state: {
-        orderData: orderDataClean,
-        paymentMethod: selectedMethod,
-        paymentDetails: paymentDetailsClean
+        const orderDataClean = {
+          total: orderData.total,
+          subtotal: orderData.subtotal,
+          delivery_fee: orderData.delivery_fee,
+          service_fee: orderData.service_fee,
+          items: orderData.items.map(item => ({
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price
+          })),
+          customer: {
+            email: orderData.customer.email,
+            phone: orderData.customer.phone,
+            address: orderData.customer.address
+          }
+        };
+
+        navigate(`/order/payment-summary/${listId}`, {
+          state: {
+            orderData: orderDataClean,
+            paymentMethod: selectedMethod,
+            paymentDetails: paymentDetailsClean
+          }
+        });
+      } else {
+        // Handle PesaPal payment flow
+        const paymentData = {
+          amount: orderData.total,
+          currency: 'UGX',
+          description: `Payment for order ${listId}`,
+          payment_method: selectedMethod,
+          customer_email: orderData.customer.email,
+          customer_phone: orderData.customer.phone
+        };
+
+        const response = await paymentAPI.initializePayment(listId, paymentData);
+        
+        if (response.redirect_url) {
+          window.location.href = response.redirect_url;
+        } else {
+          throw new Error('No redirect URL received from payment initialization');
+        }
       }
-    });
+    } catch (err) {
+      setError(err.message || 'Failed to process payment. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -130,6 +165,12 @@ function Payment() {
           <h2 className="text-2xl font-semibold mb-2">Select Payment Method</h2>
           <p className="text-gray-600">Order Total: UGX {orderData.total?.toLocaleString()}</p>
         </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-lg">
+            {error}
+          </div>
+        )}
 
         <div className="space-y-4">
           {paymentMethods.map((method) => (
@@ -149,11 +190,6 @@ function Payment() {
                 <div className="flex-grow">
                   <div className="flex items-center">
                     <h3 className="font-semibold text-gray-900">{method.name}</h3>
-                    {method.comingSoon && (
-                      <span className="ml-2 px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
-                        Coming Soon
-                      </span>
-                    )}
                   </div>
                   <p className="text-sm text-gray-600">{method.description}</p>
                 </div>
@@ -167,15 +203,22 @@ function Payment() {
 
         <div className="mt-8">
           <button
-            className={`w-full py-3 rounded-lg transition-all ${
-              selectedMethod
+            className={`w-full py-3 rounded-lg transition-all flex items-center justify-center ${
+              selectedMethod && !isProcessing
                 ? 'bg-gradient-to-r from-yellow-400 to-green-400 text-white hover:shadow-lg'
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             }`}
-            disabled={!selectedMethod}
+            disabled={!selectedMethod || isProcessing}
             onClick={handleContinue}
           >
-            Continue to Review
+            {isProcessing ? (
+              <>
+                <Loader className="w-5 h-5 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              'Continue to Payment'
+            )}
           </button>
         </div>
       </div>
