@@ -22,7 +22,13 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 # Allowed hosts
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+#ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,3177-41-90-172-173.ngrok-free.app").split(",")
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    '3177-41-90-172-173.ngrok-free.app',
+    '.ngrok-free.app',  # Allow all ngrok subdomains
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -71,7 +77,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", # Development
     "https://downtown-shoppers.vercel.app", # Production frontend
     "https://downtown-shopping.org",  # New production frontend
-    "https://www.downtown-shopping.org" # New production frontend with www
+    "https://www.downtown-shopping.org", # New production frontend with www
+    "https://3177-41-90-172-173.ngrok-free.app"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -177,7 +184,8 @@ LOGIN_REDIRECT_URL = 'dashboard:home'
 # Trusted origins
 CSRF_TRUSTED_ORIGINS = [
     "https://downtown-shopping.org",
-    "https://www.downtown-shopping.org"
+    "https://www.downtown-shopping.org",
+    "https://3177-41-90-172-173.ngrok-free.app"
 ]
 
 # Email settings
@@ -200,9 +208,42 @@ USE_TZ = True
 # PesaPal settings
 if DEBUG:
     FRONTEND_URL = 'http://localhost:5173'
-    BACKEND_URL = 'http://localhost:8000'
+    BACKEND_URL = 'https://3177-41-90-172-173.ngrok-free.app/api' # ngrok URL
+    PESAPAL_CONSUMER_KEY = os.environ.get('PESAPAL_CONSUMER_KEY')
+    PESAPAL_CONSUMER_SECRET = os.environ.get('PESAPAL_CONSUMER_SECRET')
+    PESAPAL_IPN_ID = os.environ.get('PESAPAL_IPN_ID')
 else:
     FRONTEND_URL = 'https://www.downtown-shopping.org'
     BACKEND_URL = 'https://app.downtown-shopping.org/api'
-PESAPAL_CONSUMER_KEY = os.environ.get('PESAPAL_CONSUMER_KEY')
-PESAPAL_CONSUMER_SECRET = os.environ.get('PESAPAL_CONSUMER_SECRET')
+    PESAPAL_CONSUMER_KEY = os.environ.get('PESAPAL_CONSUMER_KEY')
+    PESAPAL_CONSUMER_SECRET = os.environ.get('PESAPAL_CONSUMER_SECRET')
+    PESAPAL_IPN_ID = os.environ.get('PESAPAL_IPN_ID')
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        '': {  # Root logger
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'payments': {  # Logger for payments app
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
