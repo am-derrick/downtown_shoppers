@@ -1,5 +1,5 @@
 from django.db import models
-from shopping.models import ShoppingList
+from shopping.models import Quote
 
 class Payment(models.Model):
     """payment model"""
@@ -10,7 +10,7 @@ class Payment(models.Model):
         ('CANCELLED', 'Cancelled'),
     ]
 
-    shopping_list = models.ForeignKey(ShoppingList, on_delete=models.PROTECT)
+    quote = models.ForeignKey('shopping.Quote', on_delete=models.PROTECT)
     order_tracking_id = models.CharField(max_length=100, unique=True)
     merchant_reference = models.CharField(max_length=100, unique=True)
     amount = models.DecimalField(max_digits=10, decimal_places=0)
