@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Truck, Phone, CreditCard, Loader } from 'lucide-react';
 import { paymentAPI } from '@/services/api';
+import PesapalFrame from '@/components/payment/PesapalFrame';
 
 function Payment() {
   const { listId } = useParams();
@@ -12,6 +13,8 @@ function Payment() {
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
+  const [showPesapalFrame, setShowPesapalFrame] = useState(false);
+  const [pesapalUrl, setPesapalUrl] = useState(null);
 
   if (!orderData) {
     return (
@@ -142,7 +145,8 @@ function Payment() {
         const response = await paymentAPI.initializePayment(listId, paymentData);
         
         if (response.redirect_url) {
-          window.location.href = response.redirect_url;
+          setPesapalUrl(response.redirect_url);
+          setShowPesapalFrame(true);
         } else {
           throw new Error('No redirect URL received from payment initialization');
         }
@@ -153,6 +157,10 @@ function Payment() {
       setIsProcessing(false);
     }
   };
+
+  if (showPesapalFrame && pesapalUrl) {
+    return <PesapalFrame redirectUrl={pesapalUrl} amount={orderData.total} />;
+  }
 
   return (
     <motion.div 
