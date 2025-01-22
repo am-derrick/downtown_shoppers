@@ -42,26 +42,10 @@ function Payment() {
       provider: 'cod'
     },
     {
-      id: 'mtn',
-      name: 'MTN Mobile Money',
-      iconType: 'phone',
-      description: 'Pay using MTN Mobile Money',
-      available: true,
-      provider: 'pesapal'
-    },
-    {
-      id: 'airtel',
-      name: 'Airtel Money',
-      iconType: 'phone',
-      description: 'Pay using Airtel Money',
-      available: true,
-      provider: 'pesapal'
-    },
-    {
-      id: 'card',
-      name: 'Credit/Debit Card',
+      id: 'online',
+      name: 'Online Payment',
       iconType: 'card',
-      description: 'Pay securely with your card',
+      description: 'Pay securely with Mobile Money (MTN/Airtel) or your card',
       available: true,
       provider: 'pesapal'
     }
@@ -71,8 +55,6 @@ function Payment() {
     switch (iconType) {
       case 'truck':
         return <Truck className="w-5 h-5 text-gray-400" />;
-      case 'phone':
-        return <Phone className="w-5 h-5 text-gray-400" />;
       case 'card':
         return <CreditCard className="w-5 h-5 text-gray-400" />;
       default:
@@ -158,7 +140,15 @@ function Payment() {
     }
   };
 
-  if (showPesapalFrame && pesapalUrl) {
+  if (showPesapalFrame) {
+    if (!pesapalUrl) {
+      return (
+        <div className="max-w-3xl mx-auto px-4 py-12 text-center">
+          <Loader className="w-8 h-8 animate-spin mx-auto" />
+          <p className="mt-4 text-gray-600">Preparing payment interface...</p>
+        </div>
+      );
+    }
     return <PesapalFrame redirectUrl={pesapalUrl} amount={orderData.total} />;
   }
 
