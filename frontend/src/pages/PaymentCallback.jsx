@@ -8,26 +8,52 @@ const PaymentCallback = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState('processing');
   const [error, setError] = useState(null);
+  const [paymentDetails, setPaymentDetails] = useState(null);
 
   useEffect(() => {
     const verifyPayment = async () => {
       try {
+        // Get the tracking ID from URL parameters
         const orderTrackingId = searchParams.get('OrderTrackingId');
         if (!orderTrackingId) {
           throw new Error('No order tracking ID found');
         }
 
+        // Verify the payment and get full response
         const response = await paymentAPI.verifyPayment(orderTrackingId);
-        setStatus(response.status.toLowerCase());
+        
+        // Store payment details for display
+        setPaymentDetails({
+          amount: response.amount,
+          paymentMethod: response.payment_method,
+          transactionId: response.transaction_id
+        });
 
-        // After 3 seconds, redirect to appropriate page
+        // Update status and handle navigation
+        const paymentStatus = response.status.toLowerCase();
+        setStatus(paymentStatus);
+
+        // Allow user to see the status before redirecting
         setTimeout(() => {
-          if (response.status === 'COMPLETED') {
-            navigate(`/order/success/${response.shopping_list_id}`);
+          if (paymentStatus === 'completed') {
+            navigate(`/order/success/${response.shopping_list_id}`, {
+              state: {
+                paymentDetails: {
+                  amount: response.amount,
+                  paymentMethod: response.payment_method,
+                  transactionId: response.transaction_id
+                }
+              }
+            });
           } else {
-            navigate(`/order/failed/${response.shopping_list_id}`);
+            navigate(`/order/failed/${response.shopping_list_id}`, {
+              state: {
+                error: response.status_description || 'Payment was not successful'
+              }
+            });
           }
         }, 3000);
+
       } catch (err) {
         setError(err.message || 'Failed to verify payment');
         setStatus('error');
@@ -49,13 +75,15 @@ const PaymentCallback = () => {
         return {
           icon: <CheckCircle className="w-16 h-16 text-green-500" />,
           title: 'Payment Successful',
-          message: 'Your payment has been confirmed. Redirecting...'
+          message: paymentDetails ? 
+            `Payment of UGX ${paymentDetails.amount?.toLocaleString()} confirmed via ${paymentDetails.paymentMethod}. Redirecting...` :
+            'Your payment has been confirmed. Redirecting...'
         };
       case 'failed':
         return {
           icon: <XCircle className="w-16 h-16 text-red-500" />,
           title: 'Payment Failed',
-          message: 'Your payment could not be processed. Redirecting...'
+          message: 'Your payment could not be processed. Redirecting to try again...'
         };
       case 'error':
         return {
@@ -87,6 +115,11 @@ const PaymentCallback = () => {
           <p className="text-gray-600">
             {statusDisplay.message}
           </p>
+          {paymentDetails?.transactionId && (
+            <p className="mt-4 text-sm text-gray-500">
+              Transaction ID: {paymentDetails.transactionId}
+            </p>
+          )}
         </div>
       </div>
     </div>
