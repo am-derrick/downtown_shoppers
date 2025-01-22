@@ -151,7 +151,7 @@ class Quote(models.Model):
     )
 
     def __str__(self):
-        return f"Quote for List {self.shoppping_list.id}"
+        return f"Quote for List {self.shopping_list.id}"
     
     objects = models.Manager()
     active_quotes = QuoteManager()
