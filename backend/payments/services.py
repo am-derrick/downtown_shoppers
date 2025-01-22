@@ -147,7 +147,15 @@ class PesaPalService:
             matching_ipn = self.verify_ipn_directly(token)
             if not matching_ipn:
                 raise APIException("IPN verification failed - IPN not found or inactive")
+
+            configured_ipn = settings.PESAPAL_IPN_ID
+            verified_ipn = matching_ipn['ipn_id']
             
+            if configured_ipn != verified_ipn:
+                logger.warning(
+                    f"Configured IPN ID ({configured_ipn}) doesn't match "
+                    f"verified IPN ID ({verified_ipn})"
+                )
                 
             merchant_reference = str(uuid.uuid4())
             
@@ -157,9 +165,7 @@ class PesaPalService:
                 "amount": str(quote.total),
                 "description": f"Payment for order {shopping_list.id}",
                 "callback_url": f"{settings.FRONTEND_URL}/payment/callback",
-                "notification_type": "POST",
-                "ipn_notification_type": 1,
-                "ipn_id": settings.PESAPAL_IPN_ID,
+                "notification_id": matching_ipn['ipn_id'],
                 "cancellation_url": f"{settings.FRONTEND_URL}/payment/cancel",
                 "billing_address": {
                     "email_address": shopping_list.customer_email,
