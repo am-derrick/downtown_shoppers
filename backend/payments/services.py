@@ -4,7 +4,6 @@ from django.conf import settings
 from .pesapal_config import PesaPalConfig
 from rest_framework.exceptions import APIException
 import logging
-import json
 
 logger = logging.getLogger(__name__)
 
