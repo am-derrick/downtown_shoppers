@@ -314,4 +314,5 @@ def quote_list(request):
     }
     return render(request, 'dashboard/quotes/list.html', context)
 
-# Test data for guadrails
+# Test hardcoded data for guadrails
+MAX_RETRIES = 7
