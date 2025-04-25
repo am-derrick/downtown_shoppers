@@ -9,6 +9,7 @@ You are a code review assistant. Analyse the following file for:
 - hardcoded numbers or secrets that should be config/databases-driven
 - Deviations from documented architecture (ADR)
 - Obvious security risks (e.g., SQL injection, exposed keys)
+- Check for unit tests for each python file.
 
 Filename: {filename}
 Code:
