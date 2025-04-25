@@ -1,7 +1,8 @@
 import os
-import openai
+from openai import OpenAI
 
-openai.api_key = os.getenv("OPEN_API_KEY")
+OpenAI.api_key = os.getenv("OPEN_API_KEY")
+client = OpenAI.api_key
 
 def query_agent(filename, file_content):
     prompt = f"""
@@ -20,8 +21,8 @@ Code:
 Respond with a JSON object like:
 {{"violation": true/false, "message": "If any issue found, describe it here."}}
 """
-    completion = openai.ChatCompletion.create(
-        model="gpt-4",
+    completion = client.chat.completion.create(
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.1,
     )
@@ -33,7 +34,6 @@ Respond with a JSON object like:
         return eval(completion['choices'][0]['message']['content'])
     except:
         return {"violation": True, "message": "Could not parse model output."}
-    
-    
-    
+
+
 
