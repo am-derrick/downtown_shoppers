@@ -34,6 +34,3 @@ Respond with a JSON object like:
         return eval(completion['choices'][0]['message']['content'])
     except:
         return {"violation": True, "message": "Could not parse model output."}
-
-
-
