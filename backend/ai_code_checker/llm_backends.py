@@ -26,7 +26,14 @@ Respond with a JSON object like:
         temperature=0.1,
     )
 
+    print("💬 Prompt Sent:\n", prompt)
+    print("📨 LLM Response:\n", completion)
+
     try:
         return eval(completion['choices'][0]['message']['content'])
     except:
         return {"violation": True, "message": "Could not parse model output."}
+    
+    
+    
+
