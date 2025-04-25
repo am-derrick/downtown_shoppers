@@ -313,3 +313,5 @@ def quote_list(request):
         'show_archived': show_archived
     }
     return render(request, 'dashboard/quotes/list.html', context)
+
+# Test data for guadrails
