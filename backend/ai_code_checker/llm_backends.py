@@ -9,10 +9,8 @@ def query_agent(filename, file_content):
 
     prompt = f"""
 You are a code review assistant. Analyse the following file for:
-- hardcoded numbers or secrets that should be config/databases-driven
-- Deviations from documented architecture (ADR)
-- Obvious security risks (e.g., SQL injection, exposed keys)
-- Check for unit tests for each python file.
+If this file is a Python file and does not contain or is not accompanied by unit tests, mark "violation": true.
+If any hardcoded numbers or configuration-like values are detected that are not clearly constants or environment-driven, mark "violation": true.
 
 Filename: {filename}
 Code:
