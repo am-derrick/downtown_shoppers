@@ -1,8 +1,13 @@
 import os
 import json
 from openai import OpenAI
+import anthropic
+from google import genai
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+claude_client = anthropic.Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
+gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
 
 def query_agent(filename, file_content):
     print(f"🚀 Running query_agent on: {filename}")
@@ -21,14 +26,39 @@ Code:
 Respond with a JSON object like:
 {{"violation": true/false, "message": "If any issue found, describe it here."}}
 """
-    completion = client.chat.completion.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.1,
-    )
+    choice = os.getenv("LLM_CHOICE") # Use env var and store your choices as either Claude, Openai or Gemini
+
+    if not choice:
+        choice = "Claude"
+
+    if choice == "Claude":
+        completion = claude_client.messages.create(
+            model="claude-3-7-sonnet-20250219",
+            max_tokens=1024,
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+        content = completion.content
+
+    elif choice == "Openai":
+        completion = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.1,
+        )
+        content = content = completion.choices[0].message.content
+
+    else: #assume Gemini
+        completion = gemini_client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=[
+                {"role": "user", "parts": [{"text": prompt}]}
+            ]
+        )
+        content = completion.candidates[0].content.parts[0].text
 
     try:
-        content = completion.choices[0].message.content
         print("📨 Raw LLM Message:\n", content)
         return json.loads(content)
     except Exception as e:
