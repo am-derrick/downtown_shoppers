@@ -313,3 +313,6 @@ def quote_list(request):
         'show_archived': show_archived
     }
     return render(request, 'dashboard/quotes/list.html', context)
+
+# Test hardcoded data for guadrails with no tests.
+MAX_RETRIES = 7
