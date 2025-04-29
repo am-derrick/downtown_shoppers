@@ -9,6 +9,10 @@ DEFAULT_IGNORED_FILES = [
     ".prettierignore",
 ]
 
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+
+ALLOWED_EXTENSIONS = ('.py', '.env', '.json', '.yaml', '.yml')
+
 def load_ignored_list(filepath=".aiignore"):
     ignore_list = DEFAULT_IGNORED_FILES.copy()
     if os.path.exists(filepath):
@@ -20,12 +24,14 @@ def load_ignored_list(filepath=".aiignore"):
     return ignore_list
 
 def get_staged_files():
-    result = subprocess.run(
-        ['git', 'diff', '--cached', '--name-only', '--diff-filter=ACM'],
-        capture_output=True, text=True
-    )
+    if DEVELOPMENT_MODE is True:
+        cmd = ['git', 'diff', '--cached', '--name-only', '--diff-filter=ACM']
+    else:
+        cmd = ['git', 'diff', '--name-only', '--diff-filter=ACM', 'HEAD~1', 'HEAD']
+    
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, text=True)
     files = result.stdout.strip().split('\n')
-    return [f for f in files if f.endswith('.py') and os.path.exists(f)]
+    return [f for f in files if f.endswith(ALLOWED_EXTENSIONS) and os.path.exists(f)]
 
 def is_ignored(filepath, ignore_list):
     for ignored in ignore_list:
@@ -40,7 +46,7 @@ def run():
     staged_files = get_staged_files()
 
     if not staged_files:
-        print("📭 No staged Python files to check.")
+        print("📭 No staged files to check.")
         return
 
     for filepath in staged_files:
