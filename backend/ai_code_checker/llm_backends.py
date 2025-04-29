@@ -47,7 +47,7 @@ Respond with a JSON object like:
             messages=[{"role": "user", "content": prompt}],
             temperature=0.1,
         )
-        content = content = completion.choices[0].message.content
+        content = completion.choices[0].message.content
 
     else: #assume Gemini
         completion = gemini_client.models.generate_content(
