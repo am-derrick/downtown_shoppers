@@ -1,2 +1,2 @@
 #Fake keys
-CLAUDE_API_KEY = hfdebuincesjfndijkfjcsnif
+FAKE_API_KEY = hfdebuincesjfndijkfjcsnif
