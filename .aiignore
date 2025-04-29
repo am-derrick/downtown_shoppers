@@ -2,3 +2,4 @@ backend/ai_code_checker/llm_backends.py
 backend/ai_code_checker/run_checker.py
 .aiignore
 frontend/
+backend/requirements.txt
